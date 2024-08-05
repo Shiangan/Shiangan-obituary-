@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>訃聞提交</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>提交訃聞信息</h1>
+    </header>
+    <div class="container">
+        <form id="submission-form">
+            <label for="deceased-name">亡者姓名:</label>
+            <input type="text" id="deceased-name" name="deceased-name" required>
+
+            <label for="deceased-gender">性別:</label>
+            <select id="deceased-gender" name="deceased-gender" required>
+                <option value="male">男</option>
+                <option value="female">女</option>
+            </select>
+
+            <label for="deceased-age">年齡:</label>
+            <input type="number" id="deceased-age" name="deceased-age" required>
+
+            <label for="date-of-death">逝世日期:</label>
+            <input type="date" id="date-of-death" name="date-of-death" required>
+
+            <label for="main-photo">主要照片網址:</label>
+            <input type="url" id="main-photo" name="main-photo" required>
+
+            <label for="obituary-photos">訃聞照片網址（可多個）:</label>
+            <input type="text" id="obituary-photos" name="obituary-photos" placeholder="逗號分隔的網址">
+            
+            <label for="placard-location">設立牌位地點:</label>
+            <input type="text" id="placard-location" name="placard-location" required>
+
+            <label for="funeral-date">出殯日期:</label>
+            <input type="date" id="funeral-date" name="funeral-date" required>
+
+            <label for="funeral-location">出殯地點:</label>
+            <input type="text" id="funeral-location" name="funeral-location" required>
+
+            <label for="memorial-photos">回憶照片網址（可多個）:</label>
+            <input type="text" id="memorial-photos" name="memorial-photos" placeholder="逗號分隔的網址">
+            
+            <label for="audio-upload">音樂檔案:</label>
+            <input type="file" id="audio-upload" name="audio-upload" accept="audio/*" required>
+
+            <button type="submit">提交訃聞</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('submission-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('deceased-name').value;
+            const gender = document.getElementById('deceased-gender').value;
+            const age = document.getElementById('deceased-age').value;
+            const dateOfDeath = document.getElementById('date-of-death').value;
+            const mainPhoto = document.getElementById('main-photo').value;
+            const obituaryPhotos = document.getElementById('obituary-photos').value.split(',');
+            const placardLocation = document.getElementById('placard-location').value;
+            const funeralDate = document.getElementById('funeral-date').value;
+            const funeralLocation = document.getElementById('funeral-location').value;
+            const memorialPhotos = document.getElementById('memorial-photos').value.split(',');
+
+            const audioFile = document.getElementById('audio-upload').files[0];
+            const audioUrl = URL.createObjectURL(audioFile);
+
+            localStorage.setItem('deceasedName', name);
+            localStorage.setItem('gender', gender);
+            localStorage.setItem('age', age);
+            localStorage.setItem('dateOfDeath', dateOfDeath);
+            localStorage.setItem('mainPhoto', mainPhoto);
+            localStorage.setItem('obituaryPhotos', JSON.stringify(obituaryPhotos));
+            localStorage.setItem('placardLocation', placardLocation);
+            localStorage.setItem('funeralDate', funeralDate);
+            localStorage.setItem('funeralLocation', funeralLocation);
+            localStorage.setItem('memorialPhotos', JSON.stringify(memorialPhotos));
+            localStorage.setItem('audioUrl', audioUrl);
+
+            window.location.href = 'obituary.html';
+        });
+    </script>
+</body>
+</html>
