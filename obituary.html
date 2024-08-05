@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: '微軟正黑體', Arial, sans-serif;
             background-color: #f4f4f4;
             color: #333;
             margin: 0;
@@ -33,6 +33,7 @@
             border-bottom: 2px solid #eee;
             padding-bottom: 0.5rem;
             margin-bottom: 1rem;
+            font-size: 1.5rem;
         }
         .photo img, .obituary-photos img, .memorial-photos img {
             max-width: 100%;
@@ -46,6 +47,7 @@
             padding: 1rem;
             background-color: #f9f9f9;
             border-radius: 8px;
+            overflow: hidden;
         }
         .timeline:before {
             content: '';
@@ -56,18 +58,34 @@
             width: 2px;
             background: #007BFF;
         }
+        .timeline-content {
+            display: flex;
+            flex-direction: column;
+        }
         .timeline-item {
             position: relative;
             margin: 10px 0;
-            padding-left: 40px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 45%;
+        }
+        .timeline-item:nth-child(even) {
+            margin-left: auto;
+            text-align: right;
+        }
+        .timeline-item:nth-child(odd) {
+            margin-right: auto;
+            text-align: left;
         }
         .timeline-item:before {
             content: '';
             position: absolute;
-            left: 10px;
+            left: -15px;
             top: 50%;
-            width: 10px;
-            height: 10px;
+            width: 15px;
+            height: 15px;
             background: #007BFF;
             border-radius: 50%;
             transform: translateY(-50%);
@@ -127,6 +145,9 @@
         a:hover {
             text-decoration: underline;
         }
+        .file-upload {
+            margin-top: 1rem;
+        }
     </style>
 </head>
 <body>
@@ -149,7 +170,7 @@
         <!-- 訃聞資訊時間軸 -->
         <div class="timeline">
             <h2>訃聞資訊時間軸</h2>
-            <div id="timeline-content">
+            <div class="timeline-content" id="timeline-content">
                 <!-- 動態時間軸內容將在這裡插入 -->
             </div>
         </div>
@@ -178,6 +199,13 @@
             <div id="comments-section" class="comments-section"></div>
             <textarea id="comment-input" placeholder="請留下您的留言..." rows="4"></textarea>
             <button id="submit-comment">提交留言</button>
+        </div>
+
+        <!-- 文件上传 -->
+        <div class="file-upload">
+            <h2>上傳照片</h2>
+            <input type="file" id="fileInput" accept="image/*" />
+            <img id="preview" src="#" alt="預覽" style="display:none; max-width:100%; border-radius: 10px;">
         </div>
     </div>
 
@@ -222,7 +250,7 @@
                 deathDate: localStorage.getItem('dateOfDeath'),
                 age: localStorage.getItem('age'),
                 content: localStorage.getItem('content'),
-                placardLocation: localStorage.getItem('placardLocation'),
+                placardLocation: localStorage.getItem('                placardLocation: localStorage.getItem('placardLocation'),
                 funeralDate: localStorage.getItem('funeralDate'),
                 funeralLocation: localStorage.getItem('funeralLocation')
             };
@@ -251,7 +279,7 @@
                 </div>
                 <div class="timeline-item">
                     <h4>出殯日期</h4>
-                                        <p>${timeline.funeralDate}</p>
+                    <p>${timeline.funeralDate}</p>
                 </div>
                 <div class="timeline-item">
                     <h4>出殯地點</h4>
@@ -301,10 +329,24 @@
                     commentsSection.appendChild(comment);
                     commentInput.value = '';
                     
-                    // Save comment to localStorage
+                    // 保存留言到 localStorage
                     const existingComments = JSON.parse(localStorage.getItem('comments')) || [];
                     existingComments.push(commentText);
                     localStorage.setItem('comments', JSON.stringify(existingComments));
+                }
+            });
+
+            // 文件上传预览
+            document.getElementById('fileInput').addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const preview = document.getElementById('preview');
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
                 }
             });
         });
