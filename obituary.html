@@ -74,36 +74,30 @@
         .timeline-item:nth-child(even) {
             margin-left: auto;
         }
+        .timeline-item:nth-child(odd) {
+            margin-right: auto;
+        }
         .comment {
-            border-bottom: 1px solid #ddd;
-            padding: 10px 0;
+            background-color: #f1f1f1;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
         }
-        .comment p {
-            margin: 0;
+        .comment input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
         }
-        #comments-section {
-            margin-top: 2rem;
-        }
-        #submit-comment {
-            margin-top: 1rem;
-            padding: 0.5rem 1rem;
+        .comment button {
+            padding: 10px 20px;
             background-color: #007BFF;
-            color: #fff;
+            color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
         }
-        #submit-comment:hover {
+        .comment button:hover {
             background-color: #0056b3;
-        }
-        #comment-input {
-            width: calc(100% - 110px);
-            padding: 0.5rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        .slick-slide img {
-            width: 100%;
         }
     </style>
 </head>
@@ -113,32 +107,17 @@
     </header>
     <div class="container">
         <div class="photo">
-            <img id="main-photo" alt="主要照片">
+            <img id="main-photo" src="" alt="主要照片">
         </div>
-        
-        <h2 id="deceased-name"></h2>
-        <p id="gender-age"></p>
-        <p id="date-of-death"></p>
-
-        <h3>訃聞照片</h3>
-        <div id="obituary-photos" class="photo"></div>
-
-        <h3>回憶照片</h3>
-        <div id="memorial-photos" class="photo"></div>
-
-        <h3>設立牌位地點</h3>
-        <p id="placard-location"></p>
-
-        <h3>出殯日期和地點</h3>
-        <p id="funeral-date"></p>
-        <p id="funeral-location"></p>
-
-        <h3>音樂檔案</h3>
-        <audio id="audio-player" controls></audio>
-
-        <div id="comments-section">
-            <h3>留言區</h3>
-            <input type="text" id="comment-input" placeholder="輸入留言">
+        <h2>訃聞照片</h2>
+        <div id="obituary-photos" class="obituary-photos"></div>
+        <h2>回憶照片</h2>
+        <div id="memorial-photos" class="memorial-photos"></div>
+        <div class="timeline" id="timeline-content"></div>
+        <div id="comments-section" class="comments-section">
+            <h2>留言區</h2>
+            <div id="comments"></div>
+            <input type="text" id="comment-input" placeholder="留下您的留言...">
             <button id="submit-comment">提交留言</button>
         </div>
     </div>
@@ -147,24 +126,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const name = localStorage.getItem('deceasedName');
-            const gender = localStorage.getItem('gender');
-            const age = localStorage.getItem('age');
-            const dateOfDeath = localStorage.getItem('dateOfDeath');
-            const mainPhotoUrl = localStorage.getItem('mainPhoto');
+            // 获取存储的数据
+            const mainPhoto = localStorage.getItem('mainPhoto');
+            document.getElementById('main-photo').src = mainPhoto;
+
             const obituaryPhotos = JSON.parse(localStorage.getItem('obituaryPhotos')) || [];
-            const memorialPhotos = JSON.parse(localStorage.getItem('memorialPhotos')) || [];
-            const placardLocation = localStorage.getItem('placardLocation');
-            const funeralDate = localStorage.getItem('funeralDate');
-            const funeralLocation = localStorage.getItem('funeralLocation');
-            const audioUrl = localStorage.getItem('audioUrl');
-
-            document.getElementById('deceased-name').textContent = name;
-            document.getElementById('gender-age').textContent = `性別: ${gender}, 年齡: ${age}`;
-            document.getElementById('date-of-death').textContent = `逝世日期: ${dateOfDeath}`;
-            document.getElementById('main-photo').src = mainPhotoUrl;
-
-            // 訃聞照片
             const obituaryPhotosContainer = document.getElementById('obituary-photos');
             obituaryPhotos.forEach(photo => {
                 const img = document.createElement('img');
@@ -173,40 +139,7 @@
                 obituaryPhotosContainer.appendChild(img);
             });
 
-            // 時間軸
-            const timelineContent = document.getElementById('timeline-content');
-            timelineContent.innerHTML = `
-                <div class="timeline-item">
-                    <h4>出生日期</h4>
-                    <p>${localStorage.getItem('birthDate')}</p>
-                </div>
-                <div class="timeline-item">
-                    <h4>逝世日期</h4>
-                    <p>${localStorage.getItem('dateOfDeath')}</p>
-                </div>
-                <div class="timeline-item">
-                    <h4>享壽</h4>
-                    <p>${localStorage.getItem('age')}歲</p>
-                </div>
-                <div class="timeline-item">
-                    <h4>訃聞內容</h4>
-                    <p>${localStorage.getItem('content')}</p>
-                </div>
-                <div class="timeline-item">
-                    <h4>設立牌位地點</h4>
-                    <p>${localStorage.getItem('placardLocation')}</p>
-                </div>
-                <div class="timeline-item">
-                    <h4>出殯日期</h4>
-                    <p>${localStorage.getItem('funeralDate')}</p>
-                </div>
-                <div class="timeline-item">
-                    <h4>出殯地點</h4>
-                    <p>${localStorage.getItem('funeralLocation')}</p>
-                </div>
-            `;
-
-            // 回憶照片輪播
+            const memorialPhotos = JSON.parse(localStorage.getItem('memorialPhotos')) || [];
             const carousel = document.getElementById('memorial-photos');
             if (memorialPhotos.length > 0) {
                 memorialPhotos.forEach(photo => {
@@ -226,17 +159,53 @@
                 });
             }
 
-            // 音樂檔案
-            const audioPlayer = document.getElementById('audio-player');
-            if (audioUrl) {
-                audioPlayer.src = audioUrl;
-            }
+            const timeline = {
+                birthDate: localStorage.getItem('birthDate'),
+                deathDate: localStorage.getItem('dateOfDeath'),
+                age: localStorage.getItem('age'),
+                content: localStorage.getItem('content'),
+                placardLocation: localStorage.getItem('placardLocation'),
+                funeralDate: localStorage.getItem('funeralDate'),
+                funeralLocation: localStorage.getItem('funeralLocation')
+            };
 
-            // 留言區
-            const commentsSection = document.getElementById('comments-section');
+            const timelineContent = document.getElementById('timeline-content');
+            timelineContent.innerHTML = `
+                <div class="timeline-item">
+                    <h4>出生日期</h4>
+                    <p>${timeline.birthDate}</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>逝世日期</h4>
+                    <p>${timeline.deathDate}</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>享壽</h4>
+                    <p>${timeline.age}歲</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>訃聞內容</h4>
+                    <p>${timeline.content}</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>設立牌位地點</h4>
+                    <p>${timeline.placardLocation}</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>出殯日期</h4>
+                    <p>${timeline.funeralDate}</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>出殯地點</h4>
+                    <p>${timeline.funeralLocation}</p>
+                </div>
+            `;
+
+            // 留言区
+            const commentsSection = document.getElementById('comments');
             const comments = JSON.parse(localStorage.getItem('comments')) || [];
             comments.forEach(commentText => {
-            const comment = document.createElement('div');
+                const comment = document.createElement('div');
                 comment.classList.add('comment');
                 comment.innerHTML = `<p>${commentText}</p>`;
                 commentsSection.appendChild(comment);
@@ -257,20 +226,6 @@
                     const existingComments = JSON.parse(localStorage.getItem('comments')) || [];
                     existingComments.push(commentText);
                     localStorage.setItem('comments', JSON.stringify(existingComments));
-                }
-            });
-
-            // 文件上传预览
-            document.getElementById('fileInput').addEventListener('change', function(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const preview = document.getElementById('preview');
-                        preview.src = e.target.result;
-                        preview.style.display = 'block';
-                    };
-                    reader.readAsDataURL(file);
                 }
             });
         });
