@@ -10,13 +10,13 @@
     <style>
         body {
             font-family: '微軟正黑體', Arial, sans-serif;
-            background-color: #f8f9fa;
+            background-color: #f4f4f4;
             color: #333;
             margin: 0;
             padding: 0;
         }
         header {
-            background-color: #007BFF;
+            background-color: #444;
             color: #fff;
             padding: 1rem 2rem;
             text-align: center;
@@ -74,215 +74,229 @@
         .timeline-item:nth-child(even) {
             margin-left: auto;
         }
-        .comment-section {
+        .timeline-item:nth-child(odd) {
+            margin-right: auto;
+        }
+        .carousel {
             margin-top: 2rem;
         }
-        .comment {
-            margin: 10px 0;
-            padding: 10px;
+        .carousel img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .music-player {
+            margin-top: 2rem;
+            background-color: #fff;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .music-player button {
+            background-color: #007BFF;
+            border: none;
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .music-player button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .music-player audio {
+            width: 100%;
+            margin-left: 1rem;
+        }
+        .comments-section {
+            margin-top: 2rem;
+            padding: 1rem;
             background-color: #fff;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-        .comment-input {
+        .comment-inputs {
             display: flex;
             flex-direction: column;
-            margin-top: 1rem;
         }
-        .comment-input input, .comment-input textarea {
-            margin: 5px 0;
-            padding: 10px;
+        .comment-inputs input, .comment-inputs button {
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            border-radius: 4px;
             border: 1px solid #ddd;
-            border-radius: 8px;
         }
-        .comment-input button {
-            padding: 10px;
+        .comment-inputs button {
             background-color: #007BFF;
             color: #fff;
             border: none;
-            border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.3s;
         }
-        .comment-input button:hover {
-            background-color: #0056b3;
+        .comment-inputs button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
         }
-        .carousel img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        .comments-section .comment {
+            padding: 0.5rem;
+            border-bottom: 1px solid #eee;
         }
-        #toggle-music {
-            background: none;
+        .comments-section .comment:last-child {
+            border-bottom: none;
+        }
+        .clear-comments {
+            margin-top: 1rem;
+            background-color: #FF6F61;
+            color: #fff;
             border: none;
-            font-size: 1.5rem;
+            padding: 0.5rem;
+            border-radius: 4px;
             cursor: pointer;
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            color: #007BFF;
+        }
+        .clear-comments:hover {
+            background-color: #FF4F3F;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>親愛的亡者雲端訃聞</h1>
-        <p>我們最愛的親人，永遠在我們心中。</p>
+        <h1>亡者的雲端訃聞</h1>
     </header>
     <div class="container">
+        <h2>追思內容</h2>
         <div class="photo">
-            <img id="main-photo" alt="亡者照片">
+            <img id="main-photo" src="" alt="主要照片">
         </div>
         <div class="timeline">
-            <h2>生平事蹟</h2>
-            <div id="timeline-content" class="timeline-content"></div>
+            <h3>生平時間軸</h3>
+            <div id="timeline-content"></div>
         </div>
-        <div class="obituary-photos">
-            <h2>訃聞照片</h2>
-            <div id="obituary-photos"></div>
+        <div class="carousel">
+            <h3>回憶照片</h3>
+            <div id="memorial-photos"></div>
         </div>
-        <div class="memorial-photos">
-            <h2>回憶照片</h2>
-            <div id="memorial-photos" class="carousel"></div>
+        <div class="music-player">
+            <button id="play-music">播放音樂</button>
+            <button id="stop-music" disabled>停止音樂</button>
+            <audio id="audio-player" src="" controls hidden></audio>
         </div>
-        <div class="comment-section">
-            <h2>留言板</h2>
-            <div id="comments-section"></div>
-            <div class="comment-input">
-                <input id="comment-name" type="text" placeholder="您的姓名">
-                <textarea id="comment-input" placeholder="留言內容"></textarea>
+        <div class="comments-section">
+            <h3>留言區</h3>
+            <div class="comment-inputs">
+                <input type="text" id="name-input" placeholder="您的姓名">
+                <textarea id="comment-input" placeholder="留言內容" rows="4"></textarea>
                 <button id="submit-comment">提交留言</button>
+                <button id="clear-comments" class="clear-comments">清除留言</button>
             </div>
-        </div>
-        <div>
-            <a href="flower-order.html">致贈花籃請點選我</a>
+            <div id="comments-section"></div>
         </div>
     </div>
-    <audio id="background-music" loop>
-        <source src="path/to/music.mp3" type="audio/mpeg">
-        您的瀏覽器不支援音樂播放。
-    </audio>
-    <button id="toggle-music">🔇</button>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // 獲取亡者信息
-            const name = localStorage.getItem('deceasedName');
-            const mainPhoto = localStorage.getItem('mainPhoto');
-            const obituaryPhotos = JSON.parse(localStorage.getItem('obituaryPhotos'));
-            const placardLocation = localStorage.getItem('placardLocation');
-            const funeralDate = localStorage.getItem('funeralDate');
-            const funeralLocation = localStorage.getItem('funeralLocation');
-            const memorialPhotos = JSON.parse(localStorage.getItem('memorialPhotos'));
-            const birthDate = localStorage.getItem('birthDate');
-            const dateOfDeath = localStorage.getItem('dateOfDeath');
-            const age = localStorage.getItem('age');
-            const content = localStorage.getItem('content');
+            // 音樂播放器控制
+            const playButton = document.getElementById('play-music');
+            const stopButton = document.getElementById('stop-music');
+            const audioPlayer = document.getElementById('audio-player');
 
-            // 設置主要照片
+            playButton.addEventListener('click', function() {
+                audioPlayer.play();
+                playButton.disabled = true;
+                stopButton.disabled = false;
+            });
+
+            stopButton.addEventListener('click', function() {
+                audioPlayer.pause();
+                audioPlayer.currentTime = 0;
+                playButton.disabled = false;
+                stopButton.disabled = true;
+            });
+
+            // 加载音乐文件
+            const audioUrl = localStorage.getItem('audioUrl');
+            audioPlayer.src = audioUrl;
+
+            // 处理主照片
+            const mainPhoto = localStorage.getItem('mainPhoto');
             document.getElementById('main-photo').src = mainPhoto;
 
-            // 設置訃聞照片
-            const obituaryPhotosContainer = document.getElementById('obituary-photos');
-            obituaryPhotos.forEach(photo => {
+            // 处理时间轴
+            const timeline = JSON.parse(localStorage.getItem('timeline')) || [];
+            const timelineContent = document.getElementById('timeline-content');
+            timeline.forEach(event => {
+                const item = document.createElement('div');
+                item.classList.add('timeline-item');
+                item.innerHTML = `
+                    <h4>${event.year}</h4>
+                    <p>${event.content.map(c => c.tag).join(', ')}</p>
+                `;
+                timelineContent.appendChild(item);
+            });
+
+            // 处理回忆照片
+            const memorialPhotos = JSON.parse(localStorage.getItem('memorialPhotos')) || [];
+            const carousel = document.getElementById('memorial-photos');
+            memorialPhotos.forEach(photo => {
                 const img = document.createElement('img');
                 img.src = photo;
-                img.alt = '訃聞照片';
-                obituaryPhotosContainer.appendChild(img);
+                img.alt = '回憶照片';
+                carousel.appendChild(img);
             });
 
-            // 設置時間軸
-            const timeline = [
-                { year: birthDate, content: '出生' },
-                { year: dateOfDeath, content: '逝世' },
-                { year: '享壽', content: age + '歲' },
-                { year: '設立牌位地點', content: placardLocation },
-                { year: '出殯日期', content: funeralDate },
-                { year: '出殯地點', content: funeralLocation },
-                { year: '訃聞內容', content: content }
-            ];
-
-            const timelineContent = document.getElementById('timeline-content');
-            timeline.forEach(item => {
-                const timelineItem = document.createElement('div');
-                timelineItem.classList.add('timeline-item');
-                timelineItem.innerHTML = `<h4>${item.year}</h4><p>${item.content}</p>`;
-                timelineContent.appendChild(timelineItem);
+            $(carousel).slick({
+                infinite: true,
+                slidesToShow: 3,
+                slidesToScroll: 1,
+                autoplay: true,
+                autoplaySpeed: 3000,
+                arrows: true,
+                dots: true
             });
 
-            // 設置回憶照片輪播
-            const carousel = document.getElementById('memorial-photos');
-            if (memorialPhotos.length > 0) {
-                memorialPhotos.forEach(photo => {
-                    const img = document.createElement('img');
-                    img.src = photo;
-                    img.alt = '回憶照片';
-                    carousel.appendChild(img);
-                });
-                $(carousel).slick({
-                    infinite: true,
-                    slidesToShow: 3
-                    slidesToScroll: 1,
-                    autoplay: true,
-                    autoplaySpeed: 3000,
-                    arrows: true,
-                    dots: true
-                });
-            }
-
-            // 設置留言區
+            // 处理留言
             const commentsSection = document.getElementById('comments-section');
-            const comments = JSON.parse(localStorage.getItem('comments')) || [];
+            const comments = JSON.parse(localStorage.getItem('comments')) ||
+            [];
             comments.forEach(comment => {
                 const commentDiv = document.createElement('div');
                 commentDiv.classList.add('comment');
-                commentDiv.innerHTML = `<p>${comment.name}: ${comment.text}</p>`;
+                commentDiv.innerHTML = `<p><strong>${comment.name}:</strong> ${comment.text}</p>`;
                 commentsSection.appendChild(commentDiv);
             });
 
             // 提交留言
             document.getElementById('submit-comment').addEventListener('click', function() {
-                const nameInput = document.getElementById('comment-name');
-                const commentInput = document.getElementById('comment-input');
-                const name = nameInput.value.trim();
-                const text = commentInput.value.trim();
-                
-                if (name && text) {
-                    const commentDiv = document.createElement('div');
-                    commentDiv.classList.add('comment');
-                    commentDiv.innerHTML = `<p>${name}: ${text}</p>`;
-                    commentsSection.appendChild(commentDiv);
-                    
-                    // 保存留言到 localStorage
-                    const newComment = { name, text };
+                const nameInput = document.getElementById('name-input').value.trim();
+                const commentInput = document.getElementById('comment-input').value.trim();
+                if (nameInput && commentInput) {
+                    const newComment = {
+                        name: nameInput,
+                        text: commentInput
+                    };
                     const existingComments = JSON.parse(localStorage.getItem('comments')) || [];
                     existingComments.push(newComment);
                     localStorage.setItem('comments', JSON.stringify(existingComments));
                     
-                    // 清空輸入框
-                    nameInput.value = '';
-                    commentInput.value = '';
+                    // 添加评论到页面
+                    const commentDiv = document.createElement('div');
+                    commentDiv.classList.add('comment');
+                    commentDiv.innerHTML = `<p><strong>${nameInput}:</strong> ${commentInput}</p>`;
+                    commentsSection.appendChild(commentDiv);
+
+                    // 清空输入框
+                    document.getElementById('name-input').value = '';
+                    document.getElementById('comment-input').value = '';
                 }
             });
 
-            // 音樂控制
-            const backgroundMusic = document.getElementById('background-music');
-            const toggleMusicButton = document.getElementById('toggle-music');
-            let isPlaying = false;
-
-            toggleMusicButton.addEventListener('click', function() {
-                if (isPlaying) {
-                    backgroundMusic.pause();
-                    toggleMusicButton.textContent = '🔇';
-                } else {
-                    backgroundMusic.play();
-                    toggleMusicButton.textContent = '🔊';
-                }
-                isPlaying = !isPlaying;
+            // 清除留言
+            document.getElementById('clear-comments').addEventListener('click', function() {
+                localStorage.removeItem('comments');
+                commentsSection.innerHTML = '';
             });
         });
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
 </body>
 </html>
