@@ -6,52 +6,46 @@
     <title>雲端訃聞提交表單</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: '微軟正黑體', Arial, sans-serif;
             background-color: #f4f4f4;
-            color: #333;
             margin: 0;
             padding: 0;
         }
-
         header {
-            background-color: #333;
-            color: #fff;
-            padding: 10px 0;
+            background-color: #4FBDBC;
+            color: white;
+            padding: 1rem;
             text-align: center;
+            font-size: 2rem;
         }
-
         .container {
             width: 80%;
-            margin: 0 auto;
-            padding: 20px;
-            background: #fff;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #fff;
+            border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-
         form {
             display: flex;
             flex-direction: column;
         }
-
         label {
-            margin-top: 10px;
+            margin-top: 1rem;
         }
-
         input, select, button {
-            padding: 10px;
-            margin-top: 5px;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
         }
-
         button {
-            background-color: #333;
-            color: #fff;
+            background-color: #4FBDBC;
+            color: white;
             border: none;
             cursor: pointer;
-            margin-top: 20px;
-        }
-
-        button:hover {
-            background-color: #555;
+            margin-top: 2rem;
         }
     </style>
 </head>
@@ -70,11 +64,11 @@
                 <option value="female">女</option>
             </select>
 
+            <label for="birthDate">出生日期</label>
+            <input type="date" id="birthDate" name="birthDate" required>
+
             <label for="age">享年</label>
             <input type="number" id="age" name="age" required>
-
-            <label for="dateOfBirth">出生日期</label>
-            <input type="date" id="dateOfBirth" name="dateOfBirth" required>
 
             <label for="dateOfDeath">逝世日期</label>
             <input type="date" id="dateOfDeath" name="dateOfDeath" required>
@@ -109,31 +103,21 @@
             const form = document.getElementById('obituaryForm');
             const formData = new FormData(form);
 
-            // 儲存檔案至localStorage (注意：此方法僅用於示範，不適用於生產環境)
-            const filesToRead = ['mainPhoto', 'obituaryPhotos', 'memorialPhotos', 'audioFile'];
-
-            filesToRead.forEach((key) => {
-                const files = formData.getAll(key);
-                const fileData = [];
-                files.forEach((file) => {
+            formData.forEach((value, key) => {
+                if (value instanceof File) {
                     const reader = new FileReader();
                     reader.onload = function(event) {
-                        fileData.push(event.target.result);
-                        localStorage.setItem(key, JSON.stringify(fileData));
+                        localStorage.setItem(key, event.target.result);
                     };
-                    reader.readAsDataURL(file);
-                });
-            });
-
-            formData.forEach((value, key) => {
-                if (!filesToRead.includes(key)) {
+                    reader.readAsDataURL(value);
+                } else {
                     localStorage.setItem(key, value);
                 }
             });
 
             setTimeout(() => {
                 window.location.href = 'obituary.html';
-            }, 1000); // 延遲以確保檔案讀取完成
+            }, 1000);
         }
     </script>
 </body>
