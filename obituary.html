@@ -7,25 +7,29 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background: #f7f7f7;
             color: #333;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background-color: #333;
-            color: #fff;
-            padding: 10px 0;
-            text-align: center;
+            line-height: 1.6;
         }
 
         .container {
-            width: 80%;
+            max-width: 800px;
             margin: 0 auto;
             padding: 20px;
             background: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #333;
         }
 
         .main-photo {
@@ -35,105 +39,130 @@
 
         .main-photo img {
             max-width: 100%;
-            height: auto;
-            display: block;
-            margin: 0 auto;
-            border-radius: 10px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            transition: opacity 1s;
+            opacity: 0;
+        }
+
+        .main-photo img.loaded {
+            opacity: 1;
         }
 
         .notification {
             text-align: center;
             margin-bottom: 20px;
-            font-size: 1.2em;
-            color: #555;
+            font-size: 18px;
+        }
+
+        .notification p {
+            margin: 5px 0;
         }
 
         .timeline {
-            position: relative;
-            padding: 20px 0;
             list-style: none;
+            padding: 0;
+            position: relative;
+            margin: 20px 0;
         }
 
-        .timeline:before {
+        .timeline::before {
             content: '';
             position: absolute;
             top: 0;
             bottom: 0;
+            left: 50%;
             width: 2px;
             background: #ddd;
-            left: 50%;
-            margin-left: -1px;
         }
 
         .timeline-event {
-            margin: 20px 0;
-            padding-left: 50%;
             position: relative;
+            margin-bottom: 20px;
+            padding-left: 20px;
+            width: 50%;
         }
 
         .timeline-event:nth-child(even) {
+            left: 50%;
             padding-left: 0;
-            padding-right: 50%;
-            text-align: right;
+            padding-right: 20px;
         }
 
-        .timeline-event:before {
+        .timeline-event .timeline-content {
+            position: relative;
+            padding: 15px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .timeline-event .timeline-content h3 {
+            margin: 0 0 5px;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .timeline-event .timeline-content p {
+            margin: 0;
+        }
+
+        .timeline-event::after {
             content: '';
             position: absolute;
             top: 15px;
-            left: 50%;
+            right: -8px;
             width: 15px;
             height: 15px;
-            margin-left: -8px;
-            background: #333;
+            background: #fff;
+            border: 2px solid #ddd;
             border-radius: 50%;
+            z-index: 1;
         }
 
-        .timeline-content {
-            padding: 15px;
-            background: #fff;
-            position: relative;
-            border-radius: 5px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        .timeline-event:nth-child(even)::after {
+            left: -8px;
+            right: auto;
         }
 
         .slick-carousel {
-            margin-top: 20px;
+            margin: 20px 0;
         }
 
         .slick-carousel img {
-            width: 100%;
-            height: auto;
-            border-radius: 10px;
+            max-width: 100%;
+            border-radius: 8px;
+            border: 2px solid #ddd;
         }
 
         .donation-section {
             text-align: center;
-            margin: 30px 0;
+            margin: 20px 0;
         }
 
-        .donate-link {
-            background: #333;
-            color: #fff;
+        .donation-section .donate-link {
+            display: inline-block;
             padding: 10px 20px;
+            background: #4caf50;
+            color: #fff;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 8px;
+            transition: background 0.3s;
         }
 
-        .donate-link:hover {
-            background: #555;
+        .donation-section .donate-link:hover {
+            background: #45a049;
         }
 
         footer {
             text-align: center;
-            margin-top: 30px;
-            padding: 20px 0;
-            background: #333;
-            color: #fff;
+            margin-top: 20px;
+        }
+
+        footer p {
+            margin: 5px 0;
         }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css" />
 </head>
 <body>
     <header>
@@ -144,11 +173,7 @@
             <img id="mainPhoto" src="" alt="逝者主照片">
         </div>
         <div class="notification">
-            <p>逝者姓名: <span id="deceasedName"></span></p>
-            <p>性別: <span id="gender"></span></p>
-            <p>享年: <span id="age"></span> 歲</p>
-            <p>出生日期: <span id="dateOfBirth"></span></p>
-            <p>逝世日期: <span id="dateOfDeath"></span></p>
+            <p>我們的至親 <span id="deceasedName"></span> 於 <span id="dateOfDeath"></span> 已離世，享年 <span id="age"></span> 歲。</p>
         </div>
         <ul class="timeline" id="timeline">
             <li class="timeline-event">
@@ -184,7 +209,7 @@
         </div>
     </div>
     <footer>
-        <p>祥安生命有限公司</p>
+        <p>承辦禮儀：祥安生命有限公司</p>
         <p>聯絡電話: 0978583699</p>
     </footer>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -203,20 +228,16 @@
             document.getElementById('deceasedName').innerText = deceasedName;
             document.getElementById('gender').innerText = gender === 'male' ? '男' : '女';
             document.getElementById('age').innerText = age;
-            document.getElementById('dateOfBirth').innerText = new Date(dateOfBirth).toLocaleDateString('zh-TW');
             document.getElementById('dateOfDeath').innerText = new Date(dateOfDeath).toLocaleDateString('zh-TW');
+            document.getElementById('birthEvent').innerText = `出生於 ${new Date(dateOfBirth).toLocaleDateString('zh-TW')}`;
+            document.getElementById('deathEvent').innerText = `逝於 ${new Date(dateOfDeath).toLocaleDateString('zh-TW')}，享年 ${age} 歲`;
             document.getElementById('placardLocation').innerText = placardLocation;
             document.getElementById('funeralDetails').innerText = `告別式日期: ${new Date(funeralDate).toLocaleDateString('zh-TW')}，地點: ${funeralLocation}`;
 
-            const birthEvent = `出生於 ${new Date(dateOfBirth).toLocaleDateString('zh-TW')}`;
-            const deathEvent = `逝於 ${new Date(dateOfDeath).toLocaleDateString('zh-TW')}，享年 ${age} 歲`;
-
-            document.getElementById('birthEvent').innerText = birthEvent;
-            document.getElementById('deathEvent').innerText = deathEvent;
-
-            const mainPhoto = JSON.parse(localStorage.getItem('mainPhoto'));
-            if (mainPhoto && mainPhoto.length > 0) {
-                document.getElementById('mainPhoto').src = mainPhoto[0];
+            const mainPhoto = localStorage.getItem('mainPhoto');
+            if (mainPhoto) {
+                document.getElementById('mainPhoto').src = mainPhoto;
+                document.getElementById('mainPhoto').classList.add('loaded');
             }
 
             const memorialPhotos = JSON.parse(localStorage.getItem('memorialPhotos'));
@@ -235,10 +256,9 @@
                 });
             }
 
-            const audioFile = JSON.parse(localStorage.getItem('audioFile'));
-            if (audioFile && audioFile.length > 0) {
-                const audio = new Audio(audioFile[0]);
-                audio.loop = true;
+            const audioFile = localStorage.getItem('audioFile');
+            if (audioFile) {
+                const audio = new Audio(audioFile);
                 audio.play();
             }
         });
