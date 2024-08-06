@@ -3,121 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>訃聞</title>
+    <title>訃聞內頁</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
+    <style>
+        body {
+            font-family: '微軟正黑體', Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #4FBDBC;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            font-size: 2rem;
+        }
+        .container {
+            width: 80%;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .main-photo img {
+            width: 100%;
+            border-radius: 8px;
+        }
+        .timeline {
+            margin: 2rem 0;
+            position: relative;
+            padding: 1rem;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #4FBDBC;
+        }
+        .timeline-item {
+            position: relative;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 45%;
+            float: left;
+        }
+        .timeline-item:nth-child(odd) {
+            clear: both;
+        }
+        .timeline-item:nth-child(even) {
+            float: right;
+            margin-left: 50%;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 12px;
+            height: 12px;
+            background-color: #4FBDBC;
+            border-radius: 50%;
+        }
+        .carousel {
+            margin: 2rem 0;
+        }
+        .carousel img {
+            width: 100%;
+            border-radius: 8px;
+        }
+        .comments-section {
+            margin-top: 2rem;
+        }
+        .comment {
+            background-color: #f9f9f9;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .comment-name {
+            font-weight: bold;
+        }
+        .comment-content {
+            margin-top: 0.5rem;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>訃聞</h1>
-    </header>
+    <header>訃聞內頁</header>
     <div class="container">
-        <div id="obituary">
-            <h2>{{ deceasedName }}</h2>
-            <p>性別: {{ gender }}</p>
-            <p>年齡: {{ age }}</p>
-            <p>逝世日期: {{ dateOfDeath }}</p>
-            <img :src="mainPhoto" alt="主要照片" class="main-photo">
+        <div class="main-photo">
+            <img id="mainPhoto" alt="主照片">
+        </div>
+        <h2 id="deceasedName"></h2>
+        <p>性別: <span id="gender"></span></p>
+        <p>享年: <span id="age"></span></p>
+        <p>逝世日期: <span id="dateOfDeath"></span></p>
+        
+        <div id="obituaryPhotosContainer" class="obituary-photos"></div>
 
-            <div v-if="obituaryPhotos.length > 0">
-                <h3>訃聞照片</h3>
-                <div v-for="photo in obituaryPhotos" :key="photo">
-                    <img :src="photo" alt="訃聞照片" class="obituary-photo">
-                </div>
-            </div>
+        <p id="placardLocationContainer"></p>
+        <p id="funeralDateContainer"></p>
+        <p id="funeralLocationContainer"></p>
 
-            <p>設立牌位地點: {{ placardLocation }}</p>
-            <p>出殯日期: {{ funeralDate }}</p>
-            <p>出殯地點: {{ funeralLocation }}</p>
-
-            <div v-if="memorialPhotos.length > 0">
-                <h3>追思照片</h3>
-                <div class="carousel">
-                    <div v-for="photo in memorialPhotos" :key="photo" class="carousel-item">
-                        <img :src="photo" alt="追思照片" class="memorial-photo">
-                    </div>
-                </div>
-            </div>
-
-            <div>
-                <h3>播放音樂</h3>
-                <audio :src="audioUrl" controls autoplay></audio>
-            </div>
-
-            <div>
-                <h3>致贈花籃請點選我</h3>
-                <a href="flower-order.html" class="flower-order-link">訂購花籃</a>
-            </div>
-
-            <div>
-                <h3>留言區</h3>
-                <div class="comments">
-                    <textarea v-model="newComment" placeholder="寫下您的追思"></textarea>
-                    <button @click="addComment">提交留言</button>
-                    <ul>
-                        <li v-for="comment in comments" :key="comment">{{ comment }}</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div>
-                <h3>殯儀服務提供者</h3>
-                <p>祥安生命有限公司</p>
-                <p>聯絡電話: +886978583699</p>
-                <p>殯儀總監: 陳妍如</p>
+        <div id="memorialPhotosContainer" class="carousel">
+            <div class="slick-carousel" id="memorial-photos">
+                <!-- 追思照片輪播內容會在此注入 -->
             </div>
         </div>
+
+        <section class="comments-section">
+            <h3>留言區</h3>
+            <div id="commentsContainer"></div>
+            <form id="commentForm">
+                <label for="commentName">姓名</label>
+                <input type="text" id="commentName" name="commentName" required>
+
+                <label for="commentContent">留言</label>
+                <textarea id="commentContent" name="commentContent" required></textarea>
+
+                <button type="button" onclick="submitComment()">提交留言</button>
+            </form>
+        </section>
     </div>
 
+    <audio id="backgroundMusic" loop></audio>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
     <script>
-        new Vue({
-            el: '#obituary',
-            data: {
-                deceasedName: localStorage.getItem('deceasedName'),
-                gender: localStorage.getItem('gender'),
-                age: localStorage.getItem('age'),
-                dateOfDeath: localStorage.getItem('dateOfDeath'),
-                mainPhoto: localStorage.getItem('mainPhoto'),
-                obituaryPhotos: JSON.parse(localStorage.getItem('obituaryPhotos')),
-                placardLocation: localStorage.getItem('placardLocation'),
-                funeralDate: localStorage.getItem('funeralDate'),
-                funeralLocation: localStorage.getItem('funeralLocation'),
-                memorialPhotos: JSON.parse(localStorage.getItem('memorialPhotos')),
-                audioUrl: localStorage.getItem('audioUrl'),
-                comments: [],
-                newComment: ''
-            },
-            methods: {
-                addComment() {
-                    if (this.newComment.trim()) {
-                        this.comments.push(this.newComment.trim());
-                        this.newComment = '';
-                    }
-                }
-            }
-        });
+        document.addEventListener('DOMContentLoaded', function() {
+            const mainPhoto = localStorage.getItem('mainPhoto');
+            const deceasedName = localStorage.getItem('deceasedName');
+            const gender = localStorage.getItem('gender');
+            const age = localStorage.getItem('age');
+            const dateOfDeath = localStorage.getItem('dateOfDeath');
+            const obituaryPhotos = JSON.parse(localStorage.getItem('obituaryPhotos')) || [];
+            const placardLocation = localStorage.getItem('placardLocation');
+            const funeralDate = localStorage.getItem('funeralDate');
+            const funeralLocation = localStorage.getItem('funeralLocation');
+            const memorialPhotos = JSON.parse(localStorage.getItem('memorialPhotos')) || [];
+            const audioFile = localStorage.getItem('audioFile');
 
-        // 初始化輪播
-        document.addEventListener('DOMContentLoaded', function () {
-            const carouselItems = document.querySelectorAll('.carousel-item');
-            let currentIndex = 0;
+            document.getElementById('mainPhoto').src = mainPhoto;
+            document.getElementById('deceasedName').textContent = deceasedName;
+            document.getElementById('gender').textContent = gender;
+            document.getElementById('age').textContent = age;
+            document.getElementById('dateOfDeath').textContent = dateOfDeath;
 
-            function showCurrent() {
-                carouselItems.forEach((item, index) => {
-                    item.style.display = index === currentIndex ? 'block' : 'none';
+            if (obituaryPhotos.length > 0) {
+                const obituaryPhotosContainer = document.getElementById('obituaryPhotosContainer');
+                obituaryPhotos.forEach(photo => {
+                    const img = document.createElement('img');
+                    img.src = photo;
+                    img.classList.add('obituary-photo');
+                    obituaryPhotosContainer.appendChild(img);
                 });
             }
 
-            function nextSlide() {
-                currentIndex = (currentIndex + 1) % carouselItems.length;
-                showCurrent();
+            if (placardLocation) {
+                document.getElementById('placardLocationContainer').textContent = `靈位位置: ${placardLocation}`;
             }
 
-            if (carouselItems.length > 0) {
-                showCurrent();
-                setInterval(nextSlide, 3000); // 每3秒切換一次
+            if (funeralDate) {
+                document.getElementById('funeralDateContainer').textContent = `告別式日期: ${funeralDate}`;
             }
-        });
-    </script>
-</body>
-</html>
+
+            if (funeralLocation) {
+                document.getElementById('funeralLocationContainer').textContent = `告別式地點: ${funeralLocation}`;
+            }
+
+                if (memorialPhotos.length > 0) {
+                const carouselContainer = document.getElementById('memorial-photos');
+                memorialPhotos.forEach(photo => {
+                    const img = document.createElement('img');
+                    img.src = photo;
+                    img.alt = '回憶照片';
+                    carouselContainer.appendChild(img);
+                });
+
+                $('.slick-carousel').slick({
+                    infinite: true,
+                    slidesToShow: 3,
+                    slidesToScroll: 1,
+                    autoplay: true,
+                    autoplaySpeed: 3000,
+                    arrows: true,
+                    dots: true
+                });
+            }
+
+              if (audioFile) {
+                  const audioElement = document.getElementById('backgroundMusic');
+                  audioElement.src = audioFile;
+                  audioElement.play();
+              }
+          });
+
+          function submitComment() {
+              const name = document.getElementById('commentName').value;
+              const content = document.getElementById('commentContent').value;
+
+              if (name && content) {
+                  const commentContainer = document.getElementById('commentsContainer');
+                  const commentDiv = document.createElement('div');
+                  commentDiv.className = 'comment';
+                  commentDiv.innerHTML = `
+                      <p class="comment-name">${name}</p>
+                      <p class="comment-content">${content}</p>
+                  `;
+                  commentContainer.appendChild(commentDiv);
+
+                  // Clear form fields
+                  document.getElementById('commentName').value = '';
+                  document.getElementById('commentContent').value = '';
+              }
+          }
+      </script>
+  </body>
+  </html>
