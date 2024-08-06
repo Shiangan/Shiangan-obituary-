@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>訃聞內頁</title>
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
     <style>
@@ -20,22 +21,6 @@
             text-align: center;
             font-size: 2rem;
         }
-        .main-photo {
-            position: relative;
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-        .main-photo img {
-            width: 100%;
-            height: auto;
-            border-radius: 8px;
-        }
-        .caption-bottom {
-            margin-top: 1rem;
-            text-align: center;
-            font-size: 1.2rem;
-            color: #333;
-        }
         .container {
             width: 80%;
             margin: 2rem auto;
@@ -44,13 +29,26 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+        .main-photo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .main-photo img {
+            width: 50%;
+            border-radius: 10px;
+        }
+        .notification {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+        }
         .timeline {
+            margin: 2rem 0;
             position: relative;
             padding: 1rem;
             background-color: #f9f9f9;
             border-radius: 8px;
             border-left: 4px solid #4FBDBC;
-            margin-bottom: 2rem;
         }
         .timeline-item {
             position: relative;
@@ -61,6 +59,9 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             width: 45%;
             float: left;
+        }
+        .timeline-item:nth-child(odd) {
+            clear: both;
         }
         .timeline-item:nth-child(even) {
             float: right;
@@ -84,47 +85,15 @@
             width: 100%;
             border-radius: 8px;
         }
-        .donation-button {
-            text-align: center;
-            margin: 2rem 0;
-        }
-        .donation-button a {
-            display: inline-block;
-            padding: 1rem 2rem;
-            background-color: #4FBDBC;
-            color: white;
-            text-decoration: none;
-            font-size: 1.2rem;
-            border-radius: 5px;
-        }
-        .comment-section {
+        .comments-section {
             margin-top: 2rem;
         }
-        .comment-section h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
+        .comment {
+            border-bottom: 1px solid #ccc;
+            padding: 0.5rem 0;
         }
-        .comment-section label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: bold;
-        }
-        .comment-section input, .comment-section textarea {
-            width: 100%;
-            padding: 1rem;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-            margin-bottom: 1rem;
-        }
-        .comment-section button {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            background-color: #4FBDBC;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 1rem;
-            cursor: pointer;
+        .comment:last-child {
+            border-bottom: none;
         }
         footer {
             text-align: center;
@@ -132,97 +101,130 @@
             background-color: #4FBDBC;
             color: white;
             margin-top: 2rem;
+            border-radius: 0 0 10px 10px;
         }
     </style>
 </head>
 <body>
     <header>訃聞內頁</header>
-    <div class="main-photo">
-        <img id="main-photo" src="" alt="主要照片">
-        <div class="caption-bottom" id="caption"></div>
-    </div>
     <div class="container">
-        <div class="timeline" id="timeline">
-            <!-- Timeline items will be injected here -->
-        </div>
+        <div class="main-photo" id="mainPhotoContainer"></div>
+        <div class="notification" id="notification"></div>
+        <div class="timeline" id="timeline"></div>
         <div class="carousel">
-            <div class="slick-carousel" id="memorial-photos">
-                <!-- Photos will be injected here -->
-            </div>
+            <div class="slick-carousel" id="memorial-photos"></div>
         </div>
-        <div class="donation-button">
-            <a href="flower-order.html">致贈花籃請點選我</a>
+        <div class="comments-section">
+            <h2>留言區</h2>
+            <div id="comments"></div>
+            <a href="flower-order.html" class="flower-donation">致贈花籃請點選我</a>
         </div>
-        <div class="comment-section">
-            <h3>留言區</h3>
-            <form id="commentForm">
-                <label for="commenterName">姓名</label>
-                <input type="text" id="commenterName" name="commenterName" required>
-                <label for="commentText">留言</label>
-                <textarea id="commentText" name="commentText" placeholder="請在此留下您的留言..." required></textarea>
-                <button type="submit">提交留言</button>
-            </form>
-        </div>
+        <footer>承辦禮儀祥安生命</footer>
     </div>
-    <footer>
-        承辦禮儀：祥安生命
-    </footer>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Retrieve data from localStorage
-            const mainPhotoSrc = localStorage.getItem('mainPhoto');
-            const captionText = `我們的至親「${localStorage.getItem('deceasedName')}」於 ${localStorage.getItem('dateOfDeath')} 已離世，享年 ${localStorage.getItem('age')} 歲。`;
+            const deceasedName = localStorage.getItem('deceasedName');
+            const age = localStorage.getItem('age');
+            const dateOfDeath = localStorage.getItem('dateOfDeath');
+            const mainPhoto = localStorage.getItem('mainPhoto');
+            const obituaryPhotos = JSON.parse(localStorage.getItem('obituaryPhotos'));
+            const placardLocation = localStorage.getItem('placardLocation');
+            const funeralDate = localStorage.getItem('funeralDate');
+            const funeralLocation = localStorage.getItem('funeralLocation');
+            const memorialPhotos = JSON.parse(localStorage.getItem('memorialPhotos'));
+            const audioFile = localStorage.getItem('audioFile');
 
-            const timelineData = [
-                { year: `出生於 ${localStorage.getItem('dateOfBirth')}`, event: `出生於 ${localStorage.getItem('dateOfBirth')}`
-                                { year: `結婚於 ${localStorage.getItem('dateOfMarriage')}`, event: `結婚於 ${localStorage.getItem('dateOfMarriage')}` },
-                { year: `離世於 ${localStorage.getItem('dateOfDeath')}`, event: `離世於 ${localStorage.getItem('dateOfDeath')}` },
-                // 其他重要事件可以根據需要添加
-            ];
-
-            const memorialPhotos = JSON.parse(localStorage.getItem('memorialPhotos') || '[]');
-            const audioSrc = localStorage.getItem('audioFile');
-
-            document.getElementById('main-photo').src = mainPhotoSrc;
-            document.getElementById('caption').textContent = captionText;
-
-            const timelineContainer = document.getElementById('timeline');
-            timelineData.forEach(data => {
-                const div = document.createElement('div');
-                div.className = 'timeline-item';
-                div.innerHTML = `
-                    <h4>${data.year}</h4>
-                    <p>${data.event}</p>
-                `;
-                timelineContainer.appendChild(div);
-            });
-
-            const carouselContainer = document.getElementById('memorial-photos');
-            memorialPhotos.forEach(photo => {
+            // Display main photo
+            const mainPhotoContainer = document.getElementById('mainPhotoContainer');
+            if (mainPhoto) {
                 const img = document.createElement('img');
-                img.src = photo;
-                img.alt = '回憶照片';
-                carouselContainer.appendChild(img);
-            });
+                img.src = mainPhoto;
+                img.alt = '主照片';
+                mainPhotoContainer.appendChild(img);
+            }
 
-            $('.slick-carousel').slick({
-                infinite: true,
-                slidesToShow: 3,
-                slidesToScroll: 1,
-                autoplay: true,
-                autoplaySpeed: 3000,
-                arrows: true,
-                dots: true
-            });
+            // Display notification
+            const notification = document.getElementById('notification');
+            notification.innerHTML = `我們的至親「${deceasedName}」於${dateOfDeath}已離世，享年${age}歲。`;
 
-            // Background music
-            if (audioSrc) {
-                const audio = new Audio(audioSrc);
+            // Populate timeline
+            const timeline = document.getElementById('timeline');
+            if (deceasedName && dateOfDeath && age) {
+                timeline.innerHTML += `
+                    <div class="timeline-item">
+                        <h3>出生</h3>
+                        <p>${deceasedName}出生於${localStorage.getItem('dateOfBirth')}</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h3>逝世</h3>
+                        <p>${deceasedName}於${dateOfDeath}逝世，享年${age}歲。</p>
+                    </div>
+                `;
+            }
+            if (placardLocation) {
+                timeline.innerHTML += `
+                    <div class="timeline-item">
+                        <h3>靈位位置</h3>
+                        <p>${placardLocation}</p>
+                    </div>
+                `;
+            }
+            if (funeralDate && funeralLocation) {
+                timeline.innerHTML += `
+                    <div class="timeline-item">
+                        <h3>告別式日期及地點</h3>
+                        <p>${funeralDate}在${funeralLocation}舉行告別式。</p>
+                    </div>
+                `;
+            }
+
+            // Display memorial photos in carousel
+            const memorialPhotosContainer = document.getElementById('memorial-photos');
+            if (memorialPhotos && memorialPhotos.length > 0) {
+                memorialPhotos.forEach(photo => {
+                    const img = document.createElement('img');
+                    img.src = photo;
+                    img.alt = '追思照片';
+                    memorialPhotosContainer.appendChild(img);
+                });
+
+                $('.slick-carousel').slick({
+                    dots: true,
+                    infinite: true,
+                    speed: 300,
+                    slidesToShow: 1,
+                    adaptiveHeight: true
+                });
+            }
+
+            // Display obituary photos
+            const obituaryPhotosContainer = document.getElementById('obituary-photos');
+            if (obituaryPhotos && obituaryPhotos.length > 0) {
+                obituaryPhotos.forEach(photo => {
+                    const img = document.createElement('img');
+                    img.src = photo;
+                    img.alt = '訃聞照片';
+                    obituaryPhotosContainer.appendChild(img);
+                });
+            }
+
+            // Play background music
+            if (audioFile) {
+                const audio = new Audio(audioFile);
                 audio.loop = true;
                 audio.play();
             }
+
+            // Add comments section
+            const commentsContainer = document.getElementById('comments');
+            commentsContainer.innerHTML = localStorage.getItem('comments') || '';
+
+            // Add flower donation link
+            const flowerDonation = document.querySelector('.flower-donation');
+            flowerDonation.href = 'flower-order.html';
         });
     </script>
 </body>
