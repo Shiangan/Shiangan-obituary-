@@ -50,10 +50,16 @@
             padding: 1rem;
             background-color: #f9f9f9;
             border-radius: 8px;
-            border-left: 4px solid #4FBDBC;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 4px;
+            background: #4FBDBC;
+            transform: translateX(-50%);
         }
         .timeline-item {
             position: relative;
@@ -61,19 +67,30 @@
             margin: 1rem 0;
             background-color: #fff;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 80%;
+            width: 45%;
         }
         .timeline-item::before {
             content: '';
             position: absolute;
-            left: -8px;
             top: 50%;
             transform: translateY(-50%);
             width: 12px;
             height: 12px;
             background-color: #4FBDBC;
             border-radius: 50%;
+        }
+        .timeline-item.left {
+            left: 0;
+        }
+        .timeline-item.left::before {
+            right: -6px;
+        }
+        .timeline-item.right {
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .timeline-item.right::before {
+            left: -6px;
         }
         .carousel {
             margin: 2rem 0;
@@ -128,6 +145,23 @@
         .comment-form button:hover {
             background-color: #3a9999;
         }
+        .flower-donation {
+            text-align: center;
+            margin: 2rem 0;
+        }
+        .flower-donation a {
+            text-decoration: none;
+            font-size: 1.2rem;
+            color: #4FBDBC;
+            border: 2px solid #4FBDBC;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .flower-donation a:hover {
+            background-color: #4FBDBC;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -146,6 +180,9 @@
             <div class="slick-carousel" id="memorial-photos">
                 <!-- Photos will be injected here -->
             </div>
+        </div>
+        <div class="flower-donation">
+            <a href="flower-order.html">致贈花籃請點選我</a>
         </div>
         <div class="comment-section">
             <h3>留言區</h3>
@@ -170,6 +207,7 @@
             const deathDate = urlParams.get('death_date');
             const age = urlParams.get('age');
             const mainPhotoUrl = urlParams.get('main_photo');
+            const memorialPhotoUrls = urlParams.get('memorial_photos').split(',');
 
             // 設置主要照片和通知文字
             document.getElementById('main-photo').src = mainPhotoUrl;
@@ -187,9 +225,9 @@
             ];
 
             const timelineContainer = document.getElementById('timeline');
-            timelineData.forEach(data => {
+            timelineData.forEach((data, index) => {
                 const div = document.createElement('div');
-                div.className = 'timeline-item fade-in';
+                div.className = `timeline-item ${index % 2 === 0 ? 'left' : 'right'}`;
                 div.innerHTML = `
                     <h4>${data.date}</h4>
                     <p>${data.event}</p>
@@ -198,49 +236,52 @@
             });
 
             // 追思照片
-            const memorialPhotos = [
-                'path/to/photo1.jpg',
-                'path/to/photo2.jpg',
-                'path/to/photo3.jpg'
-            ];
-
             const carouselContainer = document.getElementById('memorial-photos');
-            memorialPhotos.forEach(photo => {
+            memorialPhotoUrls.forEach(photoUrl => {
                 const img = document.createElement('img');
-                img.src = photo;
+                img.src = photoUrl;
                 img.alt = '回憶照片';
                 carouselContainer.appendChild(img);
             });
 
             $('.slick-carousel').slick({
                 infinite: true,
-                slidesToShow: 3,
+                    slidesToShow: 3,
                 slidesToScroll: 1,
                 autoplay: true,
-                autoplaySpeed: 3000,
-                arrows: true,
-                dots: true
+                autoplaySpeed: 2000,
+                dots: true,
+                arrows: true
             });
 
-            // 處理留言提交
-            window.submitComment = function() {
+            // 添加背景音樂
+            const backgroundMusic = document.getElementById('background-music');
+            backgroundMusic.play();
+
+            // 留言功能
+            function submitComment() {
                 const name = document.getElementById('name').value;
                 const comment = document.getElementById('comment').value;
+
                 if (name && comment) {
-                    const commentsContainer = document.getElementById('comments');
-                    const div = document.createElement('div');
-                    div.className = 'comment';
-                    div.innerHTML = `
+                    const commentSection = document.getElementById('comments');
+                    const commentDiv = document.createElement('div');
+                    commentDiv.className = 'comment';
+                    commentDiv.innerHTML = `
                         <p>${comment}</p>
-                        <span>留言者: ${name}</span>
+                        <span>– ${name}</span>
                     `;
-                    commentsContainer.appendChild(div);
+                    commentSection.appendChild(commentDiv);
+
                     document.getElementById('name').value = '';
                     document.getElementById('comment').value = '';
                 } else {
                     alert('請填寫姓名和留言內容');
                 }
-            };
+            }
+
+            // 將提交留言功能暴露到全局
+            window.submitComment = submitComment;
         });
     </script>
 </body>
