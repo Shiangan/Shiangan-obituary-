@@ -10,6 +10,8 @@
             background: #f7f7f7;
             color: #333;
             line-height: 1.6;
+            padding: 0;
+            margin: 0;
         }
 
         .container {
@@ -154,6 +156,50 @@
             background: #45a049;
         }
 
+        .comments-section {
+            margin-top: 20px;
+        }
+
+        .comments-section h3 {
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .comments-section form {
+            margin-bottom: 20px;
+        }
+
+        .comments-section textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        .comments-section button {
+            padding: 10px 20px;
+            background: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .comments-section button:hover {
+            background: #45a049;
+        }
+
+        .comments-section .comment {
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
         footer {
             text-align: center;
             margin-top: 20px;
@@ -207,6 +253,16 @@
         <div class="donation-section">
             <a href="flower-order.html" class="donate-link">致贈花籃請點選我</a>
         </div>
+        <div class="comments-section">
+            <h3>留言區</h3>
+            <form id="commentForm">
+                <textarea id="commentText" rows="4" placeholder="留下您的留言..."></textarea>
+                <button type="submit">提交留言</button>
+            </form>
+            <div id="comments">
+                <!-- 留言將顯示在這裡 -->
+            </div>
+        </div>
     </div>
     <footer>
         <p>承辦禮儀：祥安生命有限公司</p>
@@ -216,6 +272,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // 讀取和顯示數據
             const deceasedName = localStorage.getItem('deceasedName');
             const gender = localStorage.getItem('gender');
             const age = localStorage.getItem('age');
@@ -224,9 +281,11 @@
             const placardLocation = localStorage.getItem('placardLocation');
             const funeralDate = localStorage.getItem('funeralDate');
             const funeralLocation = localStorage.getItem('funeralLocation');
+            const mainPhoto = localStorage.getItem('mainPhoto');
+            const memorialPhotos = JSON.parse(localStorage.getItem('memorialPhotos')) || [];
+            const comments = JSON.parse(localStorage.getItem('comments')) || [];
 
             document.getElementById('deceasedName').innerText = deceasedName;
-            document.getElementById('gender').innerText = gender === 'male' ? '男' : '女';
             document.getElementById('age').innerText = age;
             document.getElementById('dateOfDeath').innerText = new Date(dateOfDeath).toLocaleDateString('zh-TW');
             document.getElementById('birthEvent').innerText = `出生於 ${new Date(dateOfBirth).toLocaleDateString('zh-TW')}`;
@@ -234,14 +293,12 @@
             document.getElementById('placardLocation').innerText = placardLocation;
             document.getElementById('funeralDetails').innerText = `告別式日期: ${new Date(funeralDate).toLocaleDateString('zh-TW')}，地點: ${funeralLocation}`;
 
-            const mainPhoto = localStorage.getItem('mainPhoto');
             if (mainPhoto) {
                 document.getElementById('mainPhoto').src = mainPhoto;
                 document.getElementById('mainPhoto').classList.add('loaded');
             }
 
-            const memorialPhotos = JSON.parse(localStorage.getItem('memorialPhotos'));
-            if (memorialPhotos && memorialPhotos.length > 0) {
+            if (memorialPhotos.length > 0) {
                 memorialPhotos.forEach((photo) => {
                     const img = document.createElement('img');
                     img.src = photo;
@@ -255,6 +312,29 @@
                     adaptiveHeight: true
                 });
             }
+
+            if (comments.length > 0) {
+                comments.forEach((comment) => {
+                    const commentDiv = document.createElement('div');
+                    commentDiv.classList.add('comment');
+                    commentDiv.textContent = comment;
+                    document.getElementById('comments').appendChild(commentDiv);
+                });
+            }
+
+            document.getElementById('commentForm').addEventListener('submit', (event) => {
+                event.preventDefault();
+                const commentText = document.getElementById('commentText').value.trim();
+                if (commentText) {
+                    comments.push(commentText);
+                    localStorage.setItem('comments', JSON.stringify(comments));
+                    const commentDiv = document.createElement('div');
+                    commentDiv.classList.add('comment');
+                    commentDiv.textContent = commentText;
+                    document.getElementById('comments').appendChild(commentDiv);
+                    document.getElementById('commentText').value = '';
+                }
+            });
 
             const audioFile = localStorage.getItem('audioFile');
             if (audioFile) {
