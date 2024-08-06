@@ -4,17 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>亡者的雲端訃聞</title>
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
     <style>
         body {
             font-family: '微軟正黑體', Arial, sans-serif;
-            background-color: #D4EBE8;
+            background-color: #f4f4f4;
+            color: #333;
             margin: 0;
             padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
         }
         header {
             background-color: #444;
@@ -23,10 +22,6 @@
             text-align: center;
         }
         .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
             width: 80%;
             margin: 2rem auto;
             padding: 2rem;
@@ -47,64 +42,74 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
         .timeline {
-            height: 100vh;
-            width: 6px;
-            background-color: rgba(255, 255, 255, 0.4);
-            padding-top: 50px;
             position: relative;
+            margin-top: 2rem;
+            padding: 1rem;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .timeline:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 20px;
+            bottom: 0;
+            width: 2px;
+            background: #007BFF;
+        }
+        .timeline-content {
+            display: flex;
+            flex-direction: column;
         }
         .timeline-item {
-            width: 300px;
-            margin: 20px 0;
-            padding: 20px;
+            position: relative;
+            margin: 10px 0;
+            padding: 10px;
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            position: absolute;
-        }
-        .timeline-item:before {
-            content: '';
-            position: absolute;
-            top: 20px;
-            left: -10px;
-            width: 20px;
-            height: 20px;
-            background-color: #4FBDBC;
-            border-radius: 50%;
-        }
-        .timeline-item:nth-child(odd) {
-            left: -320px;
+            width: 45%;
         }
         .timeline-item:nth-child(even) {
-            left: 20px;
+            margin-left: auto;
+        }
+        .obituary-content {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #f4f4f4;
+            border-radius: 10px;
+        }
+        .memorial-photos {
+            margin-top: 2rem;
+        }
+        .slick-prev, .slick-next {
+            color: #007BFF;
+        }
+        .slick-dots li button:before {
+            color: #007BFF;
+        }
+        .comment-section {
+            margin-top: 2rem;
         }
         .comment {
-            background-color: #f1f1f1;
-            padding: 10px;
-            margin: 5px 0;
-            border-radius: 5px;
+            padding: 1rem;
+            background-color: #f4f4f4;
+            border-radius: 10px;
+            margin-bottom: 1rem;
         }
-        .comment input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
-        .comment button {
-            padding: 10px 20px;
-            background-color: #4FBDBC;
-            color: white;
-            border: none;
-            border-radius: 5px;
+        #music-control {
             cursor: pointer;
-        }
-        .comment button:hover {
-            background-color: #3a9a9a;
+            font-size: 1.5rem;
+            margin-top: 1rem;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>亡者的雲端訃聞</h1>
+        <h1>雲端訃聞</h1>
     </header>
     <div class="container">
         <div class="photo">
@@ -112,18 +117,30 @@
         </div>
         <h2>訃聞照片</h2>
         <div id="obituary-photos" class="obituary-photos"></div>
-        <h2>回憶照片</h2>
-        <div id="memorial-photos" class="memorial-photos"></div>
-        <div class="timeline" id="timeline">
+        
+        <div class="timeline">
+            <h2>時間軸</h2>
             <div id="timeline-content" class="timeline-content"></div>
         </div>
-        <div id="comments-section" class="comments-section">
-            <h2>留言區</h2>
-            <div id="comments"></div>
-            <input type="text" id="comment-input" placeholder="留下您的留言...">
-            <button id="submit-comment">提交留言</button>
+        
+        <div class="obituary-content">
+            <h2>訃聞內容</h2>
+            <p>我們最愛的親人永遠在我們心中。</p>
         </div>
+        
+        <h2>回憶照片</h2>
+        <div id="memorial-photos" class="memorial-photos"></div>
+        
+        <h2>留言板</h2>
+        <div id="comments-section" class="comment-section"></div>
+        <textarea id="comment-input" placeholder="留下您的追思"></textarea>
+        <button id="submit-comment">提交留言</button>
+
+        <h2><a href="flower-order.html" id="flower-order-link">致贈花籃請點選我</a></h2>
     </div>
+
+    <audio id="background-music" src=""></audio>
+    <div id="music-control">🔇</div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
@@ -132,14 +149,58 @@
             const mainPhoto = localStorage.getItem('mainPhoto');
             document.getElementById('main-photo').src = mainPhoto;
 
-            const obituaryPhotos = JSON.parse(localStorage.getItem('obituaryPhotos')) || [];
+            const obituaryPhotos = JSON.parse(localStorage.getItem('obituaryPhotos'));
             const obituaryPhotosContainer = document.getElementById('obituary-photos');
             obituaryPhotos.forEach(photo => {
                 const img = document.createElement('img');
                 img.src = photo;
                 img.alt = '訃聞照片';
+                img.style.maxHeight = '200px';  // 限制照片的最大高度
+                img.style.margin = '10px';      // 照片之间的间距
                 obituaryPhotosContainer.appendChild(img);
             });
+
+            const timeline = {
+                birthDate: localStorage.getItem('birthDate'),
+                deathDate: localStorage.getItem('dateOfDeath'),
+                age: localStorage.getItem('age'),
+                content: localStorage.getItem('content'),
+                placardLocation: localStorage.getItem('placardLocation'),
+                funeralDate: localStorage.getItem('funeralDate'),
+                funeralLocation: localStorage.getItem('funeralLocation')
+            };
+
+            const timelineContent = document.getElementById('timeline-content');
+            timelineContent.innerHTML = `
+                <div class="timeline-item">
+                    <h4>出生日期</h4>
+                    <p>${timeline.birthDate}</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>逝世日期</h4>
+                    <p>${timeline.deathDate}</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>享壽</h4>
+                    <p>${timeline.age}歲</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>訃聞內容</h4>
+                    <p>${timeline.content}</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>設立牌位地點</h4>
+                    <p>${timeline.placardLocation}</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>出殯日期</h4>
+                    <p>${timeline.funeralDate}</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>出殯地點</h4>
+                    <p>${timeline.funeralLocation}</p>
+                </div>
+            `;
 
             const memorialPhotos = JSON.parse(localStorage.getItem('memorialPhotos')) || [];
             const carousel = document.getElementById('memorial-photos');
@@ -148,6 +209,8 @@
                     const img = document.createElement('img');
                     img.src = photo;
                     img.alt = '回憶照片';
+                    img.style.maxHeight = '200px';  // 限制照片的最大高度
+                    img.style.margin = '10px';      // 照片之间的间距
                     carousel.appendChild(img);
                 });
                 $(carousel).slick({
@@ -161,62 +224,7 @@
                 });
             }
 
-            const timelineData = [
-                {
-                    year: new Date(localStorage.getItem('birthDate')).getFullYear(),
-                    content: [
-                        { tag: "出生" }
-                    ]
-                },
-                {
-                    year: new Date(localStorage.getItem('dateOfDeath')).getFullYear(),
-                    content: [
-                        { tag: "逝世" }
-                    ]
-                },
-                {
-                    year: localStorage.getItem('age'),
-                    content: [
-                        { tag: `享壽 ${localStorage.getItem('age')}歲` }
-                    ]
-                },
-                {
-                    year: '',
-                    content: [
-                        { tag: localStorage.getItem('content') }
-                    ]
-                },
-                {
-                    year: '',
-                    content: [
-                        { tag: `設立牌位地點: ${localStorage.getItem('placardLocation')}` }
-                    ]
-                },
-                {
-                    year: new Date(localStorage.getItem('funeralDate')).getFullYear(),
-                    content: [
-                        { tag: `出殯日期: ${localStorage.getItem('funeralDate')}` }
-                    ]
-                },
-                {
-                    year: '',
-                    content: [
-                        { tag: `出殯地點: ${localStorage.getItem('funeralLocation')}` }
-                    ]
-                }
-            ];
-
-            const timelineContent = document.getElementById('timeline-content');
-            timelineData.forEach((item, index) => {
-                item.content.forEach(contentItem => {
-                    const timelineItem = document.createElement('div');
-                    timelineItem.classList.add('timeline-item');
-                    timelineItem.innerHTML = `<h4>${item.year}</h4><p>${contentItem.tag}</p>`;
-                    timelineContent.appendChild(timelineItem);
-                });
-            });
-
-            const commentsSection = document.getElementById('comments');
+            const commentsSection = document.getElementById('comments-section');
             const comments = JSON.parse(localStorage.getItem('comments')) || [];
             comments.forEach(commentText => {
                 const comment = document.createElement('div');
@@ -225,19 +233,37 @@
                 commentsSection.appendChild(comment);
             });
 
-            document.getElementById('submit-comment').addEventListener('click', function() {
+                        document.getElementById('submit-comment').addEventListener('click', function() {
                 const commentInput = document.getElementById('comment-input');
-                const commentText = commentInput.value.trim();
+                const commentText = commentInput.value;
                 if (commentText) {
+                    comments.push(commentText);
+                    localStorage.setItem('comments', JSON.stringify(comments));
                     const comment = document.createElement('div');
                     comment.classList.add('comment');
                     comment.innerHTML = `<p>${commentText}</p>`;
                     commentsSection.appendChild(comment);
                     commentInput.value = '';
-                    
-                    const existingComments = JSON.parse(localStorage.getItem('comments')) || [];
-                    existingComments.push(commentText);
-                    localStorage.setItem('comments', JSON.stringify(existingComments));
+                }
+            });
+
+            const musicControl = document.getElementById('music-control');
+            const backgroundMusic = document.getElementById('background-music');
+            const musicUrl = localStorage.getItem('musicUrl');
+            if (musicUrl) {
+                backgroundMusic.src = musicUrl;
+                backgroundMusic.loop = true;
+                backgroundMusic.play();
+                musicControl.innerHTML = '🔇';
+            }
+
+            musicControl.addEventListener('click', function() {
+                if (backgroundMusic.paused) {
+                    backgroundMusic.play();
+                    musicControl.innerHTML = '🔇';
+                } else {
+                    backgroundMusic.pause();
+                    musicControl.innerHTML = '🔊';
                 }
             });
         });
