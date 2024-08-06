@@ -69,92 +69,81 @@
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 45%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+        }
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            left: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 6px solid transparent;
+            border-right-color: #007BFF;
+            border-left-width: 0;
         }
         .timeline-item:nth-child(even) {
             margin-left: auto;
         }
-        .timeline-item:nth-child(odd) {
-            margin-right: auto;
-        }
-        .carousel {
-            margin-top: 2rem;
-        }
-        .carousel img {
-            width: 100%;
-            border-radius: 10px;
-        }
-        .music-player {
-            margin-top: 2rem;
+        .timeline-item-content {
+            padding: 10px;
             background-color: #fff;
-            padding: 1rem;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            max-width: 80%;
         }
-        .music-player button {
-            background-color: #007BFF;
-            border: none;
-            color: #fff;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
+        .timeline-item-content h4 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: #333;
         }
-        .music-player button:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-        .music-player audio {
-            width: 100%;
-            margin-left: 1rem;
+        .timeline-item-content p {
+            margin: 5px 0 0;
+            font-size: 1rem;
         }
         .comments-section {
             margin-top: 2rem;
-            padding: 1rem;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
         .comment-inputs {
-            display: flex;
-            flex-direction: column;
-        }
-        .comment-inputs input, .comment-inputs button {
             margin-bottom: 1rem;
+        }
+        .comment-inputs input, .comment-inputs textarea {
+            width: 100%;
             padding: 0.5rem;
-            border-radius: 4px;
+            margin-bottom: 0.5rem;
             border: 1px solid #ddd;
+            border-radius: 4px;
         }
         .comment-inputs button {
+            padding: 0.5rem 1rem;
+            border: none;
             background-color: #007BFF;
             color: #fff;
-            border: none;
-            cursor: pointer;
-        }
-        .comment-inputs button:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-        .comments-section .comment {
-            padding: 0.5rem;
-            border-bottom: 1px solid #eee;
-        }
-        .comments-section .comment:last-child {
-            border-bottom: none;
-        }
-        .clear-comments {
-            margin-top: 1rem;
-            background-color: #FF6F61;
-            color: #fff;
-            border: none;
-            padding: 0.5rem;
             border-radius: 4px;
             cursor: pointer;
         }
-        .clear-comments:hover {
-            background-color: #FF4F3F;
+        .comment-inputs button.clear-comments {
+            background-color: #FF4C4C;
+        }
+        .comment {
+            padding: 0.5rem;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 0.5rem;
+        }
+        .comment .actions {
+            margin-top: 0.5rem;
+        }
+        .comment .actions button {
+            margin-right: 0.5rem;
+        }
+        .comment .actions button.edit {
+            background-color: #FFC107;
+        }
+        .comment .actions button.delete {
+            background-color: #FF4C4C;
         }
     </style>
 </head>
@@ -163,22 +152,11 @@
         <h1>亡者的雲端訃聞</h1>
     </header>
     <div class="container">
-        <h2>追思內容</h2>
-        <div class="photo">
-            <img id="main-photo" src="" alt="主要照片">
-        </div>
-        <div class="timeline">
-            <h3>生平時間軸</h3>
-            <div id="timeline-content"></div>
-        </div>
-        <div class="carousel">
-            <h3>回憶照片</h3>
-            <div id="memorial-photos"></div>
-        </div>
-        <div class="music-player">
-            <button id="play-music">播放音樂</button>
-            <button id="stop-music" disabled>停止音樂</button>
-            <audio id="audio-player" src="" controls hidden></audio>
+        <h2>追思照片</h2>
+        <div id="memorial-photos" class="memorial-photos"></div>
+        <a href="flower-order.html" class="donate-link">致贈花籃請點選我</a>
+        <div class="timeline" id="timeline-content">
+            <!-- 時間軸內容將由 JavaScript 動態生成 -->
         </div>
         <div class="comments-section">
             <h3>留言區</h3>
@@ -191,49 +169,49 @@
             <div id="comments-section"></div>
         </div>
     </div>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // 音樂播放器控制
-            const playButton = document.getElementById('play-music');
-            const stopButton = document.getElementById('stop-music');
-            const audioPlayer = document.getElementById('audio-player');
+            const userName = '使用者'; // 這個變量可以根據實際情況來設置
 
-            playButton.addEventListener('click', function() {
-                audioPlayer.play();
-                playButton.disabled = true;
-                stopButton.disabled = false;
-            });
-
-            stopButton.addEventListener('click', function() {
-                audioPlayer.pause();
-                audioPlayer.currentTime = 0;
-                playButton.disabled = false;
-                stopButton.disabled = true;
-            });
-
-            // 加载音乐文件
-            const audioUrl = localStorage.getItem('audioUrl');
-            audioPlayer.src = audioUrl;
-
-            // 处理主照片
-            const mainPhoto = localStorage.getItem('mainPhoto');
-            document.getElementById('main-photo').src = mainPhoto;
-
-            // 处理时间轴
+            // 加載時間軸內容
             const timeline = JSON.parse(localStorage.getItem('timeline')) || [];
             const timelineContent = document.getElementById('timeline-content');
             timeline.forEach(event => {
                 const item = document.createElement('div');
                 item.classList.add('timeline-item');
                 item.innerHTML = `
-                    <h4>${event.year}</h4>
-                    <p>${event.content.map(c => c.tag).join(', ')}</p>
+                    <div class="timeline-item-content">
+                        <h4>${event.year} ${event.month ? `-${event.month}` : ''}</h4>
+                        <p>${event.content}</p>
+                    </div>
                 `;
                 timelineContent.appendChild(item);
             });
 
-            // 处理回忆照片
+            // 音樂播放器控制
+            const audioPlayer = document.createElement('audio');
+            audioPlayer.src = localStorage.getItem('audioUrl') || '';
+            audioPlayer.autoplay = true;
+            audioPlayer.hidden = true;
+            document.body.appendChild(audioPlayer);
+
+            const musicNote = document.createElement('div');
+            musicNote.innerHTML = '🎵';
+            musicNote.style.position = 'fixed';
+            musicNote.style.bottom = '10px';
+            musicNote.style.right = '10px';
+            musicNote.style.fontSize = '24px';
+            musicNote.style.cursor = 'pointer';
+            musicNote.addEventListener('click', function() {
+                if (audioPlayer.paused) {
+                    audioPlayer.play();
+                } else {
+                    audioPlayer.pause();
+                }
+            });
+            document.body.appendChild(musicNote);
+
+            // 加載回憶照片
             const memorialPhotos = JSON.parse(localStorage.getItem('memorialPhotos')) || [];
             const carousel = document.getElementById('memorial-photos');
             memorialPhotos.forEach(photo => {
@@ -253,13 +231,22 @@
                 dots: true
             });
 
-            // 处理留言
+            // 留言功能處理
             const commentsSection = document.getElementById('comments-section');
             const comments = JSON.parse(localStorage.getItem('comments')) || [];
             comments.forEach(comment => {
                 const commentDiv = document.createElement('div');
                 commentDiv.classList.add('comment');
-                commentDiv.innerHTML = `<p><strong>${comment.name}:</strong> ${comment.text}</p>`;
+                commentDiv.dataset.commentId = comment.id;
+                commentDiv.innerHTML = `
+                    <p><strong>${comment.name}:</strong> ${comment.text}</p>
+                              ${comment.name === userName ? `
+                        <div class="actions">
+                            <button class="edit">編輯</button>
+                            <button class="delete">刪除</button>
+                        </div>
+                    ` : ''}
+                `;
                 commentsSection.appendChild(commentDiv);
             });
 
@@ -269,6 +256,7 @@
                 const commentInput = document.getElementById('comment-input').value.trim();
                 if (nameInput && commentInput) {
                     const newComment = {
+                        id: new Date().getTime(), // 使用時間戳作為 ID
                         name: nameInput,
                         text: commentInput
                     };
@@ -276,15 +264,62 @@
                     existingComments.push(newComment);
                     localStorage.setItem('comments', JSON.stringify(existingComments));
                     
-                    // 添加评论到页面
+                    // 添加評論到頁面
                     const commentDiv = document.createElement('div');
                     commentDiv.classList.add('comment');
-                    commentDiv.innerHTML = `<p><strong>${nameInput}:</strong> ${commentInput}</p>`;
+                    commentDiv.dataset.commentId = newComment.id;
+                    commentDiv.innerHTML = `
+                        <p><strong>${nameInput}:</strong> ${commentInput}</p>
+                        ${nameInput === userName ? `
+                            <div class="actions">
+                                <button class="edit">編輯</button>
+                                <button class="delete">刪除</button>
+                            </div>
+                        ` : ''}
+                    `;
                     commentsSection.appendChild(commentDiv);
 
-                    // 清空输入框
+                    // 清空輸入框
                     document.getElementById('name-input').value = '';
                     document.getElementById('comment-input').value = '';
+                }
+            });
+
+            // 編輯和刪除留言功能
+            commentsSection.addEventListener('click', function(event) {
+                if (event.target.classList.contains('delete')) {
+                    const commentDiv = event.target.closest('.comment');
+                    const commentId = commentDiv.dataset.commentId;
+                    let comments = JSON.parse(localStorage.getItem('comments')) || [];
+                    comments = comments.filter(c => c.id != commentId);
+                    localStorage.setItem('comments', JSON.stringify(comments));
+                    commentsSection.removeChild(commentDiv);
+                } else if (event.target.classList.contains('edit')) {
+                    const commentDiv = event.target.closest('.comment');
+                    const commentId = commentDiv.dataset.commentId;
+                    const comment = JSON.parse(localStorage.getItem('comments')).find(c => c.id == commentId);
+                    document.getElementById('name-input').value = comment.name;
+                    document.getElementById('comment-input').value = comment.text;
+                    document.getElementById('submit-comment').textContent = '更新留言';
+                    document.getElementById('submit-comment').addEventListener('click', function() {
+                        const newNameInput = document.getElementById('name-input').value.trim();
+                        const newCommentInput = document.getElementById('comment-input').value.trim();
+                        if (newNameInput && newCommentInput) {
+                            comment.name = newNameInput;
+                            comment.text = newCommentInput;
+                            localStorage.setItem('comments', JSON.stringify(comments));
+                            commentDiv.innerHTML = `
+                                <p><strong>${newNameInput}:</strong> ${newCommentInput}</p>
+                                <div class="actions">
+                                    <button class="edit">編輯</button>
+                                    <button class="delete">刪除</button>
+                                </div>
+                            `;
+                            document.getElementById('name-input').value = '';
+                            document.getElementById('comment-input').value = '';
+                            document.getElementById('submit-comment').textContent = '提交留言';
+                        }
+                    }, { once: true });
                 }
             });
 
