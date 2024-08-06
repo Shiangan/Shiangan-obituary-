@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>訃聞提交</title>
+    <title>提交訃聞信息</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>提交訃聞信息</h1>
+        <h1>訃聞提交表單</h1>
+        <p>請填寫以下信息來紀念您所愛的人的一生</p>
     </header>
     <div class="container">
         <form id="submission-form">
             <label for="deceased-name">亡者姓名:</label>
-            <input type="text" id="deceased-name" name="deceased-name" required>
+            <input type="text" id="deceased-name" name="deceased-name" placeholder="請輸入亡者姓名" required>
 
             <label for="deceased-gender">性別:</label>
             <select id="deceased-gender" name="deceased-gender" required>
@@ -22,7 +23,7 @@
             </select>
 
             <label for="deceased-age">年齡:</label>
-            <input type="number" id="deceased-age" name="deceased-age" required>
+            <input type="number" id="deceased-age" name="deceased-age" placeholder="請輸入亡者年齡" required>
 
             <label for="date-of-death">逝世日期:</label>
             <input type="date" id="date-of-death" name="date-of-death" required>
@@ -36,13 +37,13 @@
             <div id="obituary-photos-preview" style="margin-top:10px;"></div>
 
             <label for="placard-location">設立牌位地點:</label>
-            <input type="text" id="placard-location" name="placard-location" required>
+            <input type="text" id="placard-location" name="placard-location" placeholder="請輸入牌位地點" required>
 
             <label for="funeral-date">出殯日期:</label>
             <input type="date" id="funeral-date" name="funeral-date" required>
 
             <label for="funeral-location">出殯地點:</label>
-            <input type="text" id="funeral-location" name="funeral-location" required>
+            <input type="text" id="funeral-location" name="funeral-location" placeholder="請輸入出殯地點" required>
 
             <label for="memorial-photos">回憶照片:</label>
             <input type="file" id="memorial-photos" name="memorial-photos" accept="image/*" multiple>
