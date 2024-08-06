@@ -30,15 +30,11 @@
             height: auto;
             border-radius: 8px;
         }
-        .main-photo .caption {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-            padding: 1rem;
+        .caption-bottom {
+            margin-top: 1rem;
+            text-align: center;
             font-size: 1.2rem;
+            color: #333;
         }
         .container {
             width: 80%;
@@ -108,11 +104,17 @@
             font-size: 1.5rem;
             margin-bottom: 1rem;
         }
-        .comment-section textarea {
+        .comment-section label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        .comment-section input, .comment-section textarea {
             width: 100%;
             padding: 1rem;
             border-radius: 5px;
             border: 1px solid #ddd;
+            margin-bottom: 1rem;
         }
         .comment-section button {
             display: inline-block;
@@ -122,14 +124,14 @@
             border: none;
             border-radius: 5px;
             font-size: 1rem;
-            margin-top: 1rem;
             cursor: pointer;
         }
-        .caption-bottom {
-            margin-top: 1rem;
+        footer {
             text-align: center;
-            font-size: 1.2rem;
-            color: #333;
+            padding: 1rem;
+            background-color: #4FBDBC;
+            color: white;
+            margin-top: 2rem;
         }
     </style>
 </head>
@@ -137,7 +139,7 @@
     <header>訃聞內頁</header>
     <div class="main-photo">
         <img id="main-photo" src="" alt="主要照片">
-        <div class="caption" id="caption"></div>
+        <div class="caption-bottom" id="caption"></div>
     </div>
     <div class="container">
         <div class="timeline" id="timeline">
@@ -153,33 +155,35 @@
         </div>
         <div class="comment-section">
             <h3>留言區</h3>
-            <textarea placeholder="請在此留下您的留言..."></textarea>
-            <button>提交留言</button>
+            <form id="commentForm">
+                <label for="commenterName">姓名</label>
+                <input type="text" id="commenterName" name="commenterName" required>
+                <label for="commentText">留言</label>
+                <textarea id="commentText" name="commentText" placeholder="請在此留下您的留言..." required></textarea>
+                <button type="submit">提交留言</button>
+            </form>
         </div>
     </div>
+    <footer>
+        承辦禮儀：祥安生命
+    </footer>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Example data, replace with actual data from index submission
-            const mainPhotoSrc = 'path/to/uploaded-main-photo.jpg'; // User-uploaded main photo
-            const captionText = '我們的至親「[逝者姓名]」於 [出生日期] 已離世，享年 [年齡] 歲。';
+            // Retrieve data from localStorage
+            const mainPhotoSrc = localStorage.getItem('mainPhoto');
+            const captionText = `我們的至親「${localStorage.getItem('deceasedName')}」於 ${localStorage.getItem('dateOfDeath')} 已離世，享年 ${localStorage.getItem('age')} 歲。`;
 
             const timelineData = [
-                { year: '2000年', event: '出生於 [出生日期]' },
-                { year: '2010年', event: '學步' },
-                { year: '2015年', event: '入學' },
-                { year: '2022年', event: '結婚' },
-                { year: '2024年', event: '離世於 [逝世日期]' }
+                { year: `出生於 ${localStorage.getItem('dateOfBirth')}`, event: `出生於 ${localStorage.getItem('dateOfBirth')}`
+                                { year: `結婚於 ${localStorage.getItem('dateOfMarriage')}`, event: `結婚於 ${localStorage.getItem('dateOfMarriage')}` },
+                { year: `離世於 ${localStorage.getItem('dateOfDeath')}`, event: `離世於 ${localStorage.getItem('dateOfDeath')}` },
+                // 其他重要事件可以根據需要添加
             ];
 
-            const memorialPhotos = [
-                'path/to/uploaded-memorial-photo1.jpg', // User-uploaded memorial photos
-                'path/to/uploaded-memorial-photo2.jpg',
-                'path/to/uploaded-memorial-photo3.jpg'
-            ];
-
-            const audioSrc = 'path/to/uploaded-background-music.mp3'; // User-uploaded background music
+            const memorialPhotos = JSON.parse(localStorage.getItem('memorialPhotos') || '[]');
+            const audioSrc = localStorage.getItem('audioFile');
 
             document.getElementById('main-photo').src = mainPhotoSrc;
             document.getElementById('caption').textContent = captionText;
@@ -214,9 +218,11 @@
             });
 
             // Background music
-            const audio = new Audio(audioSrc);
-            audio.loop = true;
-            audio.play();
+            if (audioSrc) {
+                const audio = new Audio(audioSrc);
+                audio.loop = true;
+                audio.play();
+            }
         });
     </script>
 </body>
