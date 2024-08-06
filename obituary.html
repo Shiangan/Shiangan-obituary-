@@ -13,8 +13,8 @@
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
-            position: relative;
             overflow-x: hidden;
+            position: relative;
         }
         header {
             background-color: #4FBDBC;
@@ -33,72 +33,73 @@
             position: relative;
         }
         .main-photo {
-            width: 100%;
-            height: 300px;
-            background: url('path/to/main-photo.jpg') no-repeat center center;
-            background-size: cover;
-            border-radius: 10px;
             position: relative;
             margin-bottom: 2rem;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            opacity: 0.9;
+            text-align: center;
         }
-        .main-photo::after {
-            content: "";
-            display: block;
-            position: absolute;
-            top: 0;
-            left: 0;
+        .main-photo img {
             width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.4);
             border-radius: 10px;
-            opacity: 0.5;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         }
         .main-photo h2 {
             position: absolute;
-            top: 50%;
+            bottom: 10px;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%);
             color: white;
-            font-size: 2rem;
+            font-size: 1.5rem;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.5);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            margin: 0;
         }
         .timeline {
-            margin: 2rem 0;
             position: relative;
-            padding: 1rem;
+            margin: 2rem 0;
+            padding: 2rem;
             background-color: #f9f9f9;
             border-radius: 8px;
             border-left: 4px solid #4FBDBC;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         .timeline-item {
             position: relative;
+            width: 80%;
             padding: 1rem;
-            margin-bottom: 1rem;
+            margin-bottom: 2rem;
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 45%;
-            float: left;
-        }
-        .timeline-item:nth-child(odd) {
-            clear: both;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .timeline-item:nth-child(even) {
-            float: right;
-            margin-left: 50%;
+            align-self: flex-start;
+            border-radius: 10px 0 0 10px;
+        }
+        .timeline-item:nth-child(odd) {
+            align-self: flex-end;
+            border-radius: 0 10px 10px 0;
         }
         .timeline-item::before {
             content: '';
             position: absolute;
-            left: -8px;
-            top: 50%;
-            transform: translateY(-50%);
             width: 12px;
             height: 12px;
             background-color: #4FBDBC;
             border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            left: -6px;
+        }
+        .timeline-item:nth-child(even)::before {
+            left: auto;
+            right: -6px;
         }
         .carousel {
             margin: 2rem 0;
@@ -168,13 +169,21 @@
             font-size: 0.9rem;
             color: #555;
         }
+        .fade-in {
+            animation: fadeIn 2s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
     </style>
 </head>
 <body>
     <header>訃聞內頁</header>
     <div class="container">
         <div class="main-photo">
-            <h2>我們的至親「張三」於2024年8月6日已離世，享年78歲。</h2>
+            <img src="path/to/main-photo.jpg" alt="主要照片">
+            <h2>我們的至親「{{name}}」於{{death_date}}已離世，享年{{age}}歲。</h2>
         </div>
         <div class="timeline" id="timeline">
             <!-- Timeline items will be injected here -->
@@ -197,26 +206,28 @@
             </div>
         </div>
     </div>
+    <audio src="path/to/background-music.mp3" autoplay loop></audio>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const timelineData = [
-                { year: '1946年3月15日', content: [{ tag: '出生' }] },
-                { year: '2024年8月6日', content: [{ tag: '離世' }] }
+                { year: '1946年3月15日', content: '出生於某地' },
+                { year: '1970年6月20日', content: '結婚於某地' },
+                { year: '2024年8月6日', content: '逝世於某地' },
+                { year: '2024年8月10日', content: '靈位安放於某地' },
+                { year: '2024年8月15日', content: '出殯日期資訊' }
             ];
 
             const timelineContainer = document.getElementById('timeline');
-            timelineData.forEach(data => {
-                data.content.forEach(item => {
-                    const div = document.createElement('div');
-                    div.className = 'timeline-item';
-                    div.innerHTML = `
-                        <h4>${data.year}</h4>
-                        <p>${item.tag}</p>
-                    `;
-                    timelineContainer.appendChild(div);
-                });
+            timelineData.forEach((data, index) => {
+                const div = document.createElement('div');
+                div.className = 'timeline-item fade-in';
+                div.innerHTML = `
+                    <h4>${data.year}</h4>
+                    <p>${data.content}</p>
+                `;
+                timelineContainer.appendChild(div);
             });
 
             const memorialPhotos = [
@@ -230,7 +241,7 @@
                 const img = document.createElement('img');
                 img.src = photo;
                 img.alt = '回憶照片';
-                carouselContainer.appendChild(img);
+                                carouselContainer.appendChild(img);
             });
 
             $('.slick-carousel').slick({
@@ -242,11 +253,6 @@
                 arrows: true,
                 dots: true
             });
-
-            // Handle background music
-            const audio = new Audio('path/to/background-music.mp3');
-            audio.loop = true;
-            audio.play();
 
             // Handle comment submission
             window.submitComment = function() {
@@ -266,7 +272,7 @@
                 } else {
                     alert('請填寫姓名和留言內容');
                 }
-            }
+            };
         });
     </script>
 </body>
