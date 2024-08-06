@@ -1,0 +1,106 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    text-align: center;
+    padding: 20px;
+    background-color: #2c3e50;
+    color: white;
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 20px;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+}
+
+button {
+    background-color: #2980b9;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #3498db;
+}
+
+.main-photo, .obituary-photo, .memorial-photo {
+    max-width: 100%;
+    margin-bottom: 10px;
+}
+
+.carousel {
+    position: relative;
+    max-width: 100%;
+    overflow: hidden;
+    margin: auto;
+}
+
+.carousel-item {
+    display: none;
+    text-align: center;
+}
+
+.flower-order-link {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #e74c3c;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.flower-order-link:hover {
+    background-color: #c0392b;
+}
+
+.comments {
+    margin-top: 20px;
+}
+
+.comments textarea {
+    height: 100px;
+}
+
+.comments button {
+    margin-top: 10px;
+}
+
+.comments ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.comments li {
+    background-color: #ecf0f1;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+}
