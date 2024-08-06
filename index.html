@@ -57,12 +57,19 @@
             const form = document.getElementById('obituaryForm');
             const formData = new FormData(form);
 
-            // 儲存檔案至localStorage (注意：此方法僅用於示範，不適用於生產環境)
+            // 儲存檔案至localStorage
             formData.forEach((value, key) => {
                 if (value instanceof File) {
                     const reader = new FileReader();
                     reader.onload = function(event) {
-                        localStorage.setItem(key, event.target.result);
+                        let storedData = localStorage.getItem(key);
+                        if (storedData) {
+                            storedData = JSON.parse(storedData);
+                            storedData.push(event.target.result);
+                        } else {
+                            storedData = [event.target.result];
+                        }
+                        localStorage.setItem(key, JSON.stringify(storedData));
                     };
                     reader.readAsDataURL(value);
                 } else {
