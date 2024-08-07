@@ -74,68 +74,96 @@
             position: absolute;
             width: 25px;
             height: 25px;
-            right: -17px;
-            background-color: #4FBDBC;
-            border: 4px solid #ff9f55;
+            right: -13px;
+            background-color: white;
+            border: 4px solid #ddd;
             top: 15px;
             border-radius: 50%;
             z-index: 1;
         }
         .timeline-item:nth-child(even):before {
-            left: -16px;
+            left: -13px;
         }
-        .carousel img {
-            width: 100%;
-            height: auto;
-            margin: 10px 0;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .comment {
-            margin-top: 10px;
-            padding: 10px;
-            border: 1px solid #ddd;
+        .timeline-item-content {
+            padding: 20px;
+            background: #f4f4f4;
+            position: relative;
             border-radius: 5px;
         }
-        .comment-name {
-            font-weight: bold;
-            margin-bottom: 5px;
+        .timeline-item-content h3 {
+            margin: 0 0 10px;
+            font-size: 1.2em;
         }
-        .comment-text {
+        .timeline-item-content p {
+            margin: 0;
+        }
+        .carousel {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+        }
+        .carousel img {
+            flex: 0 0 auto;
+            width: 100%;
+            height: auto;
+            scroll-snap-align: center;
+            margin-right: 1rem;
+            border-radius: 10px;
+        }
+        .comment {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background-color: #f4f4f4;
+            border-radius: 5px;
+        }
+        .comment p {
             margin: 0;
         }
         form {
             display: flex;
             flex-direction: column;
-            gap: 10px;
         }
-        form label {
-            font-weight: bold;
+        label {
+            margin-top: 1rem;
         }
-        form input, form textarea {
-            padding: 10px;
-            font-size: 1em;
+        input, textarea, button {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
             border: 1px solid #ddd;
             border-radius: 5px;
+            font-size: 1rem;
         }
-        form button {
-            padding: 10px;
-            font-size: 1em;
+        button {
             background-color: #4FBDBC;
             color: white;
             border: none;
+            cursor: pointer;
+            margin-top: 2rem;
+        }
+        .donate-button {
+            margin-top: 2rem;
+            background-color: #f0ad4e;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
             border-radius: 5px;
             cursor: pointer;
+            text-align: center;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+        #backgroundAudio {
+            display: none;
         }
     </style>
 </head>
 <body>
+    <header>
+        <h1>訃聞</h1>
+    </header>
     <div class="container">
-        <header>
-            <h1>訃聞</h1>
-        </header>
         <img id="mainPhoto" src="" alt="主照片">
         <div id="notice"></div>
         <div class="timeline" id="timeline"></div>
@@ -151,10 +179,9 @@
             </form>
             <div id="commentList"></div>
         </div>
-        <a id="flowerBasketLink" href="flower-order.html">致贈花籃請點選我</a>
+        <a id="flowerBasketLink" href="flower-order.html" class="donate-button">致贈花籃請點選我</a>
         <div class="footer">
-            <p>承辦禮儀公司：祥安生命有限公司<br>
-            聯絡電話: 0978-583-699</p>
+            <p>承辦禮儀公司：祥安生命有限公司<br>聯絡電話: 0978-583-699</p>
         </div>
     </div>
 
@@ -196,7 +223,7 @@
             events.forEach((e, index) => {
                 const item = document.createElement('div');
                 item.className = 'timeline-item';
-                item.innerHTML = `<h3>${e.event}</h3><p>${e.date}</p>`;
+                item.innerHTML = `<div class="timeline-item-content"><h3>${e.event}</h3><p>${e.date}</p></div>`;
                 timeline.appendChild(item);
             });
 
@@ -204,7 +231,7 @@
             memorialPhotos.forEach(photo => {
                 const img = document.createElement('img');
                 img.src = photo;
-                memorialPhotosContainer.appendChild(img);
+                                memorialPhotosContainer.appendChild(img);
             });
 
             const commentsContainer = document.getElementById('commentList');
@@ -221,8 +248,9 @@
 
             // Play background music if available
             if (audioFile) {
-                const audio = new Audio(audioFile);
-                audio.loop = true;
+                const audio = document.getElementById('backgroundAudio');
+                document.getElementById('audioSource').src = audioFile;
+                audio.load();
                 audio.play();
             }
         });
