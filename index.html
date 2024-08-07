@@ -111,7 +111,10 @@
                     const reader = new FileReader();
                     const promise = new Promise((resolve) => {
                         reader.onload = function(event) {
-                            localStorage.setItem(key, event.target.result);
+                            let storedData = localStorage.getItem(key) || '[]';
+                            storedData = JSON.parse(storedData);
+                            storedData.push(event.target.result);
+                            localStorage.setItem(key, JSON.stringify(storedData));
                             resolve();
                         };
                         reader.readAsDataURL(value);
