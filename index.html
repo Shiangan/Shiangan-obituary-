@@ -102,22 +102,27 @@
         function submitForm() {
             const form = document.getElementById('obituaryForm');
             const formData = new FormData(form);
+            const promises = [];
 
             formData.forEach((value, key) => {
                 if (value instanceof File) {
                     const reader = new FileReader();
-                    reader.onload = function(event) {
-                        localStorage.setItem(key, event.target.result);
-                    };
-                    reader.readAsDataURL(value);
+                    const promise = new Promise((resolve) => {
+                        reader.onload = function(event) {
+                            localStorage.setItem(key, event.target.result);
+                            resolve();
+                        };
+                        reader.readAsDataURL(value);
+                    });
+                    promises.push(promise);
                 } else {
                     localStorage.setItem(key, value);
                 }
             });
 
-            setTimeout(() => {
+            Promise.all(promises).then(() => {
                 window.location.href = 'obituary.html';
-            }, 1000);
+            });
         }
     </script>
 </body>
