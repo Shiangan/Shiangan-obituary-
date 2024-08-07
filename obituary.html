@@ -74,88 +74,99 @@
             position: absolute;
             width: 25px;
             height: 25px;
-            right: -13px;
+            right: -17px;
             background-color: white;
-            border: 4px solid #ddd;
+            border: 4px solid #FF9F55;
             top: 15px;
             border-radius: 50%;
             z-index: 1;
         }
         .timeline-item:nth-child(even):before {
-            left: -13px;
+            left: -16px;
         }
         .timeline-item-content {
             padding: 20px;
-            background: #f4f4f4;
+            background-color: #F9F9F9;
             position: relative;
-            border-radius: 5px;
+            border-radius: 6px;
+        }
+        .carousel img {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .comment {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+        .comment-name {
+            font-weight: bold;
+        }
+        .donate-button {
+            display: block;
+            width: 100%;
+            text-align: center;
+            padding: Certainly! Here is the rest of the obituary.html content:
+                }
+        .timeline-item:before {
+            content: " ";
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -17px;
+            background-color: white;
+            border: 4px solid #FF9F55;
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .timeline-item-content {
+            padding: 20px;
+            background-color: white;
+            position: relative;
+            border-radius: 6px;
         }
         .timeline-item-content h3 {
-            margin: 0 0 10px;
+            margin: 0;
             font-size: 1.2em;
         }
         .timeline-item-content p {
             margin: 0;
-        }
-        .carousel {
-            display: flex;
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
+            font-size: 1em;
         }
         .carousel img {
-            flex: 0 0 auto;
             width: 100%;
             height: auto;
-            scroll-snap-align: center;
-            margin-right: 1rem;
-            border-radius: 10px;
-        }
-        .comment {
-            margin-bottom: 1rem;
-            padding: 1rem;
-            background-color: #f4f4f4;
-            border-radius: 5px;
-        }
-        .comment p {
-            margin: 0;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-        }
-        label {
-            margin-top: 1rem;
-        }
-        input, textarea, button {
-            margin-top: 0.5rem;
-            padding: 0.5rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1rem;
-        }
-        button {
-            background-color: #4FBDBC;
-            color: white;
-            border: none;
-            cursor: pointer;
-            margin-top: 2rem;
+            display: block;
+            margin: 10px 0;
         }
         .donate-button {
-            margin-top: 2rem;
-            background-color: #f0ad4e;
-            color: white;
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+            display: block;
+            width: 100%;
             text-align: center;
+            background-color: #4FBDBC;
+            color: white;
+            padding: 1rem;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
         }
         .footer {
             text-align: center;
             margin-top: 20px;
+            font-size: 0.9em;
+            color: #666;
         }
-        #backgroundAudio {
-            display: none;
+        .comment {
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+        .comment-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .comment-text {
+            margin: 0;
         }
     </style>
 </head>
@@ -181,7 +192,7 @@
         </div>
         <a id="flowerBasketLink" href="flower-order.html" class="donate-button">致贈花籃請點選我</a>
         <div class="footer">
-            <p>承辦禮儀公司：祥安生命有限公司<br>聯絡電話: 0978-583-699</p>
+            <p>            承辦禮儀公司：祥安生命有限公司<br>聯絡電話: 0978-583-699</p>
         </div>
     </div>
 
@@ -231,7 +242,7 @@
             memorialPhotos.forEach(photo => {
                 const img = document.createElement('img');
                 img.src = photo;
-                                memorialPhotosContainer.appendChild(img);
+                memorialPhotosContainer.appendChild(img);
             });
 
             const commentsContainer = document.getElementById('commentList');
