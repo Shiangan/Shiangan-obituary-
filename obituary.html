@@ -88,37 +88,43 @@
             width: 100%;
             height: auto;
             margin: 10px 0;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         .footer {
             text-align: center;
             margin-top: 20px;
         }
-        #comments {
-            margin-top: 20px;
-        }
-        #comments h2 {
-            margin-bottom: 10px;
-        }
-        #commentForm {
-            margin-bottom: 20px;
-        }
-        #commentForm label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        #commentForm input, #commentForm textarea {
-            width: 100%;
+        .comment {
+            margin-top: 10px;
             padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
+            border: 1px solid #ddd;
             border-radius: 5px;
         }
-        #commentForm button {
-            padding: 10px 20px;
+        .comment-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .comment-text {
+            margin: 0;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        form label {
+            font-weight: bold;
+        }
+        form input, form textarea {
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        form button {
+            padding: 10px;
+            font-size: 1em;
             background-color: #4FBDBC;
-            color: #fff;
+            color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -143,11 +149,12 @@
                 <textarea id="commentText" name="commentText" required></textarea>
                 <button type="submit">提交留言</button>
             </form>
+            <div id="commentList"></div>
         </div>
         <a id="flowerBasketLink" href="flower-order.html">致贈花籃請點選我</a>
         <div class="footer">
-            <p>承辦禮儀公司：祥安生命有限公司
-                聯絡電話: 0978-583-699</p>
+            <p>承辦禮儀公司：祥安生命有限公司<br>
+            聯絡電話: 0978-583-699</p>
         </div>
     </div>
 
@@ -200,38 +207,48 @@
                 memorialPhotosContainer.appendChild(img);
             });
 
-            const commentsContainer = document.getElementById('comments');
+            const commentsContainer = document.getElementById('commentList');
             const comments = JSON.parse(localStorage.getItem('comments') || '[]');
             comments.forEach(comment => {
-                const p = document.createElement('p');
-                p.innerText = comment;
-                commentsContainer.appendChild(p);
+                const commentDiv = document.createElement('div');
+                commentDiv.className = 'comment';
+                commentDiv.innerHTML = `
+                    <div class="comment-name">${comment.name}</div>
+                    <div class="comment-text">${comment.text}</div>
+                `;
+                commentsContainer.appendChild(commentDiv);
             });
 
             // Play background music if available
             if (audioFile) {
-                const audio = document.getElementById('backgroundAudio');
-                document.getElementById('audioSource').src = audioFile;
-                audio.load();
+                const audio = new Audio(audioFile);
+                audio.loop = true;
                 audio.play();
             }
+        });
 
-            // Handle comment form submission
-            document.getElementById('commentForm').addEventListener('submit', (event) => {
-                event.preventDefault();
-                const commentName = document.getElementById('commentName').value;
-                const commentText = document.getElementById('commentText').value;
-
+        // Function to handle comment submission
+        document.getElementById('commentForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('commentName').value;
+            const text = document.getElementById('commentText').value;
+            if (name && text) {
                 const comments = JSON.parse(localStorage.getItem('comments') || '[]');
-                comments.push({ name: commentName, text: commentText });
+                comments.push({ name, text });
                 localStorage.setItem('comments', JSON.stringify(comments));
 
-                const p = document.createElement('p');
-                p.innerText = `${commentName}: ${commentText}`;
-                commentsContainer.appendChild(p);
+                const commentsContainer = document.getElementById('commentList');
+                const commentDiv = document.createElement('div');
+                commentDiv.className = 'comment';
+                commentDiv.innerHTML = `
+                    <div class="comment-name">${name}</div>
+                    <div class="comment-text">${text}</div>
+                `;
+                commentsContainer.appendChild(commentDiv);
 
+                // Clear form fields
                 document.getElementById('commentForm').reset();
-            });
+            }
         });
     </script>
 </body>
