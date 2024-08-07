@@ -94,13 +94,15 @@
             <label for="audioFile">音樂檔案</label>
             <input type="file" id="audioFile" name="audioFile" accept="audio/*">
 
-            <button type="button" onclick="submitForm()">提交表單並進入訃聞頁面</button>
+            <button type="submit">提交表單並進入訃聞頁面</button>
         </form>
     </div>
 
     <script>
-        function submitForm() {
-            const form = document.getElementById('obituaryForm');
+        document.getElementById('obituaryForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // 防止表單的默認提交行為
+
+            const form = event.target;
             const formData = new FormData(form);
             const promises = [];
 
@@ -123,7 +125,7 @@
             Promise.all(promises).then(() => {
                 window.location.href = 'obituary.html';
             });
-        }
+        });
     </script>
 </body>
 </html>
